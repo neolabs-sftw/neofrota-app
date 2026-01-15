@@ -1,4 +1,6 @@
 import { CorClara, CorEscura } from "@/assets/cores";
+import { useAuth } from "@/hooks/useAuth";
+import { useMotorista } from "@/hooks/useMotorista";
 import { BlurView } from "expo-blur";
 import { LinearGradient } from "expo-linear-gradient";
 import { useRouter } from "expo-router";
@@ -21,6 +23,12 @@ function NavMenu({
   const router = useRouter();
   const Cor = useColorScheme() === "dark" ? CorEscura : CorClara;
 
+  const { user, isLoading } = useAuth();
+
+  const { motorista, refetch: refetchMotorista } = useMotorista(
+    user?.motoristaId
+  );
+
   return (
     <>
       <BlurView
@@ -36,15 +44,17 @@ function NavMenu({
           backgroundColor: Cor.base + 70,
           flexDirection: "row",
           alignItems: "center",
-          justifyContent: "space-between",
-          gap: 10,
+          justifyContent:
+            motorista?.tipoMotorista === "Agregado"
+              ? "space-between"
+              : "space-evenly",
           paddingHorizontal: 20,
           borderWidth: 1,
           borderColor: Cor.bordaNavMenu,
           borderRadius: 40,
           zIndex: 999,
         }}
-      >   
+      >
         <Pressable
           style={{
             width: 50,
@@ -105,63 +115,67 @@ function NavMenu({
             Voucher
           </Text>
         </Pressable>
-        <Pressable
-          style={{
-            width: 50,
-            height: 50,
-            borderRadius: 18,
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-          onPress={() => router.replace("/controle")}
-        >
-          <Text
-            allowFontScaling={false}
+        {motorista?.tipoMotorista === "Agregado" ? (
+          <Pressable
             style={{
-              fontFamily: controle ? "IconeFill" : "Icone",
-              color: controle ? Cor.texto1 : Cor.texto2,
-              fontSize: 24,
+              width: 50,
+              height: 50,
+              borderRadius: 18,
+              alignItems: "center",
+              justifyContent: "center",
             }}
+            onPress={() => router.replace("/controle")}
           >
-            leaderboard
-          </Text>
-          <Text
-            allowFontScaling={false}
+            <Text
+              allowFontScaling={false}
+              style={{
+                fontFamily: controle ? "IconeFill" : "Icone",
+                color: controle ? Cor.texto1 : Cor.texto2,
+                fontSize: 24,
+              }}
+            >
+              leaderboard
+            </Text>
+            <Text
+              allowFontScaling={false}
+              style={{
+                color: controle ? Cor.texto1 : Cor.texto2,
+                fontSize: 12,
+              }}
+            >
+              Controle
+            </Text>
+          </Pressable>
+        ) : null}
+        {motorista?.tipoMotorista === "Agregado" ? (
+          <Pressable
             style={{
-              color: controle ? Cor.texto1 : Cor.texto2,
-              fontSize: 12,
+              width: 50,
+              height: 50,
+              borderRadius: 18,
+              alignItems: "center",
+              justifyContent: "center",
             }}
+            onPress={() => router.replace("/equipe")}
           >
-            Controle
-          </Text>
-        </Pressable>
-        <Pressable
-          style={{
-            width: 50,
-            height: 50,
-            borderRadius: 18,
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-          onPress={() => router.replace("/equipe")}
-        >
-          <Text
-            allowFontScaling={false}
-            style={{
-              fontFamily: equipe ? "IconeFill" : "Icone",
-              color: equipe ? Cor.texto1 : Cor.texto2,
-              fontSize: 24,
-            }}
-          >
-            tenancy
-          </Text>
-          <Text
-            allowFontScaling={false}
-            style={{ color: equipe ? Cor.texto1 : Cor.texto2, fontSize: 12 }}
-          >
-            Equipe
-          </Text>
-        </Pressable>
+            <Text
+              allowFontScaling={false}
+              style={{
+                fontFamily: equipe ? "IconeFill" : "Icone",
+                color: equipe ? Cor.texto1 : Cor.texto2,
+                fontSize: 24,
+              }}
+            >
+              tenancy
+            </Text>
+            <Text
+              allowFontScaling={false}
+              style={{ color: equipe ? Cor.texto1 : Cor.texto2, fontSize: 12 }}
+            >
+              Equipe
+            </Text>
+          </Pressable>
+        ) : null}
         <Pressable
           style={{
             width: 50,

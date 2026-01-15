@@ -13,13 +13,14 @@ import {
 
 export default function CardPassageiro() {
   const [modalVisivel, setModalVisivel] = useState(false);
+  const [passageiroAusente, setPassageiroAusente] = useState(true);
   const Cor = useColorScheme() === "dark" ? CorEscura : CorClara;
   return (
     <>
-      <View
+      <Pressable
         style={{
           flexDirection: "row",
-          backgroundColor: Cor.base2,
+          backgroundColor: passageiroAusente ? Cor.base2 : Cor.atencao + 50,
           width: "100%",
           height: 60,
           borderRadius: 22,
@@ -33,11 +34,13 @@ export default function CardPassageiro() {
           shadowOpacity: 0.05,
           shadowRadius: 2,
         }}
+        onLongPress={() => setPassageiroAusente(!passageiroAusente)}
       >
         <View
           style={{
             flexDirection: "column",
             width: "80%",
+            height: 30,
             justifyContent: "space-between",
           }}
         >
@@ -46,10 +49,12 @@ export default function CardPassageiro() {
             style={{
               fontSize: 16,
               fontWeight: "bold",
-              color: Cor.fixo,
+              color: passageiroAusente ? Cor.fixo : Cor.atencao,
+              textOverflow: "ellipsis",
+              overflow: "hidden",
             }}
           >
-            Jeferson da Rocha Lima
+            {passageiroAusente ? null : "(Ausente)"} Jeferson da Rocha Lima
           </Text>
           <View
             style={{
@@ -61,7 +66,10 @@ export default function CardPassageiro() {
             <View style={{ width: "48%" }}>
               <Text
                 allowFontScaling={false}
-                style={{ fontSize: 12, color: Cor.texto2 }}
+                style={{
+                  fontSize: 12,
+                  color: passageiroAusente ? Cor.texto2 : Cor.texto1,
+                }}
               >
                 Cargo
               </Text>
@@ -70,7 +78,10 @@ export default function CardPassageiro() {
             <View style={{ width: "48%" }}>
               <Text
                 allowFontScaling={false}
-                style={{ fontSize: 12, color: Cor.texto2 }}
+                style={{
+                  fontSize: 12,
+                  color: passageiroAusente ? Cor.texto2 : Cor.texto1,
+                }}
               >
                 Centro de Custo
               </Text>
@@ -98,7 +109,7 @@ export default function CardPassageiro() {
             Ver
           </Text>
         </Pressable>
-      </View>
+      </Pressable>
       <Modal
         animationType="fade"
         transparent={true}
@@ -418,9 +429,16 @@ export default function CardPassageiro() {
                   allowFontScaling={false}
                   numberOfLines={5}
                   ellipsizeMode="tail"
-                  style={{ fontSize: 14, color: Cor.texto1, textAlign: "justify" }}
+                  style={{
+                    fontSize: 14,
+                    color: Cor.texto1,
+                    textAlign: "justify",
+                  }}
                 >
-                  lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod tempor incididunt ut labore et dolore magna aliqua ut enim ad minim veniam quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat 
+                  lorem ipsum dolor sit amet consectetur adipiscing elit sed do
+                  eiusmod tempor incididunt ut labore et dolore magna aliqua ut
+                  enim ad minim veniam quis nostrud exercitation ullamco laboris
+                  nisi ut aliquip ex ea commodo consequat
                 </Text>
               </View>
             </Pressable>

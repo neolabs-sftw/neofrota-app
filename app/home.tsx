@@ -9,6 +9,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { useCarroID } from "@/hooks/useCarro";
 import { useFrota } from "@/hooks/useFrota";
 import { useMotorista } from "@/hooks/useMotorista";
+import { useVouchers } from "@/hooks/useVouchers";
 import { useRouter } from "expo-router";
 import { useState } from "react";
 import {
@@ -17,29 +18,36 @@ import {
   StyleSheet,
   Text,
   useColorScheme,
-  View
+  View,
 } from "react-native";
 
-const listaVoucher = [
-  <CardVoucher />,
-];
+const listaVoucher = [<CardVoucher />];
 
 function home() {
   const rota = useRouter();
   const Cor = useColorScheme() === "dark" ? CorEscura : CorClara;
-  const { user, isLoading } = useAuth();
-  const {data: userMotorista, refetch: refetchMotorista} = useMotorista(user?.motoristaId);
-  const {refetch: refetchFrota} = useFrota(user?.motoristaId!);
-  const { refetch: refetchCarro } = useCarroID(user?.motoristaId);
-  const motorista = userMotorista?.motorista;
 
- const [reCarregando, setReCarregando] = useState(false);
+  const { user, isLoading } = useAuth();
+  const {
+    listaVouchers,
+    loading,
+    error,
+    refetch: refetchVouchers,
+  } = useVouchers(user?.motoristaId);
+  const { motorista, refetch: refetchMotorista } = useMotorista(
+    user?.motoristaId
+  );
+  const { refetch: refetchFrota } = useFrota(user?.motoristaId!);
+  const { refetch: refetchCarro } = useCarroID(user?.motoristaId);
+
+  const [reCarregando, setReCarregando] = useState(false);
   const onRefresh = () => {
     setReCarregando(true);
     console.log("Refreshing...");
     refetchMotorista();
     refetchFrota();
     refetchCarro();
+    refetchVouchers();
     setTimeout(() => {
       setReCarregando(false);
     }, 1000);
@@ -49,19 +57,19 @@ function home() {
     <>
       <View style={{ flex: 1, backgroundColor: Cor.base }}>
         <TopoInfos segredo={true} fotoPerfil={false} />
-        <MotoristaInfos motoristaId={motorista}/>
+        <MotoristaInfos motoristaId={motorista} />
         <ScrollView
-        refreshControl={<RefreshControl
-          refreshing={reCarregando}
-            onRefresh={onRefresh}
-          />}
+          refreshControl={
+            <RefreshControl refreshing={reCarregando} onRefresh={onRefresh} />
+          }
           style={{
             flex: 1,
             backgroundColor: Cor.base,
             paddingTop: 10,
+            paddingBottom: 150,
           }}
         >
-          <View style={{width:350, height: 150, backgroundColor:"#333", alignSelf: "center", borderRadius:22, marginBottom: 5 }}/>
+          {/* <View style={{width:350, height: 150, backgroundColor:"#333", alignSelf: "center", borderRadius:22, marginBottom: 5 }}/> */}
           {motorista?.tipoMotorista === "Agregado" && <FuncionariosHome />}
           {motorista?.tipoMotorista === "Agregado" && <ModuloFinanceiro />}
           <View
@@ -75,9 +83,19 @@ function home() {
             <Text style={{ color: Cor.secundaria }}>Programação do Dia</Text>
             <View style={[styles.divider, { backgroundColor: Cor.primaria }]} />
           </View>
-          {listaVoucher.map((item, index) => {
-            return <View key={index}>{item}</View>;
+          {listaVouchers.map((v, index) => {
+            return <CardVoucher key={index} Voucher={v} />;
           })}
+          <View
+            style={{
+              width: "100%",
+              height: 100,
+              backgroundColor: "transparent",
+              alignSelf: "center",
+              borderRadius: 22,
+              marginBottom: 5,
+            }}
+          />
         </ScrollView>
         <NavMenu
           home={true}

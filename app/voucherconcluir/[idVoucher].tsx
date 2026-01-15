@@ -18,7 +18,7 @@ import {
   useColorScheme,
   View,
 } from "react-native";
-import SignatureCanvas from "react-native-signature-canvas";
+import SignaturePad from "react-native-signature-canvas";
 
 export default function VoucherConcluir() {
   const Cor = useColorScheme() === "dark" ? CorEscura : CorClara;
@@ -34,7 +34,6 @@ export default function VoucherConcluir() {
   const ref = useRef<any>(null);
 
   const handleSignature = (signature: any) => {
-    // console.log("Signature captured:", signature);
     setSignature(signature);
     setIsLoading(false);
   };
@@ -61,7 +60,7 @@ export default function VoucherConcluir() {
       // });
 
       console.log("Assinatura Base64:", signature);
-      router.push("../confirmado")
+      router.push("../confirmado");
     } catch (error) {
       Alert.alert("Erro", "Falha ao salvar a assinatura.");
     } finally {
@@ -124,104 +123,13 @@ export default function VoucherConcluir() {
                   gap: 15,
                 }}
               >
-                <Text
-                  allowFontScaling={false}
-                  style={{ color: Cor.texto2, fontSize: 12 }}
-                >
-                  Destino:{" "}
-                  <Text
-                    style={{
-                      fontWeight: "bold",
-                      color: Cor.secundaria,
-                      fontSize: 14,
-                    }}
-                  >
-                    Unidade Arcelor Mittal Candeias
-                  </Text>
-                </Text>
                 <View
                   style={{
-                    flexDirection: "row",
-                    justifyContent: "space-between",
                     width: "100%",
+                    height: 40,
+                    backgroundColor: Cor.base2,
                   }}
-                >
-                  <View
-                    style={{ flexDirection: "column", gap: 5, width: "45%" }}
-                  >
-                    <Text
-                      allowFontScaling={false}
-                      style={{ color: Cor.texto2, fontSize: 12 }}
-                    >
-                      Motorista:{" "}
-                      <Text
-                        style={{
-                          fontWeight: "bold",
-                          color: Cor.secundaria,
-                          fontSize: 14,
-                        }}
-                      >
-                        Jeferson
-                      </Text>
-                    </Text>
-                    <Text
-                      allowFontScaling={false}
-                      style={{ color: Cor.texto2, fontSize: 12 }}
-                    >
-                      Passageiros:{" "}
-                      <Text
-                        style={{
-                          fontWeight: "bold",
-                          color: Cor.secundaria,
-                          fontSize: 14,
-                        }}
-                      >
-                        3
-                      </Text>
-                    </Text>
-                  </View>
-                  <View
-                    style={{
-                      height: "90%",
-                      width: 1,
-                      backgroundColor: Cor.texto2,
-                    }}
-                  />
-                  <View
-                    style={{ flexDirection: "column", gap: 5, width: "45%" }}
-                  >
-                    <Text
-                      allowFontScaling={false}
-                      style={{ color: Cor.texto2, fontSize: 12 }}
-                    >
-                      Categoria:{" "}
-                      <Text
-                        style={{
-                          fontWeight: "bold",
-                          color: Cor.secundaria,
-                          fontSize: 14,
-                        }}
-                      >
-                        Compacto
-                      </Text>
-                    </Text>
-                    <Text
-                      allowFontScaling={false}
-                      style={{ color: Cor.texto2, fontSize: 12 }}
-                    >
-                      Valor:{" "}
-                      <Text
-                        style={{
-                          fontWeight: "bold",
-                          color: Cor.secundaria,
-                          fontSize: 14,
-                        }}
-                      >
-                        R$ 100,00
-                      </Text>
-                    </Text>
-                  </View>
-                </View>
+                ></View>
                 <View
                   style={{
                     width: "100%",
@@ -260,7 +168,7 @@ export default function VoucherConcluir() {
                     Assinatura:
                   </Text>
                   <View style={{ flex: 1 }}>
-                    <SignatureCanvas
+                    <SignaturePad
                       ref={ref}
                       onOK={handleSignature}
                       onEnd={handleEnd}

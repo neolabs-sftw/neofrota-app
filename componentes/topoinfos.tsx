@@ -10,7 +10,7 @@ export default function TopoInfos({ segredo, fotoPerfil }: any) {
   const Cor = useColorScheme() === "dark" ? CorEscura : CorClara;
 
   const { user, isLoading } = useAuth();
-  const motorista = useMotorista(user?.motoristaId);
+  const { motorista } = useMotorista(user?.motoristaId);
 
   const [segredoValores, setSegredoValores] = useState(true);
 
@@ -47,7 +47,7 @@ export default function TopoInfos({ segredo, fotoPerfil }: any) {
             <Image
               source={{
                 uri:
-                  motorista?.data?.motorista?.operadoraId?.logoOperadora ??
+                  motorista?.operadoraId?.logoOperadora ??
                   "https://iyqleanlhzcnndzuugkg.supabase.co/storage/v1/object/public/neofrotabkt/foto_logo_cliente/icon.png",
               }}
               style={{
@@ -73,7 +73,7 @@ export default function TopoInfos({ segredo, fotoPerfil }: any) {
                 color: Cor.primariaTxt,
               }}
             >
-              {motorista?.data?.motorista?.operadoraId?.nome}
+              {motorista?.operadoraId?.nome}
             </Text>
           </View>
         </View>
@@ -101,7 +101,7 @@ export default function TopoInfos({ segredo, fotoPerfil }: any) {
             <Image
               source={{
                 uri:
-                  motorista.data?.motorista.fotoMotorista ??
+                  motorista?.fotoMotorista ??
                   "https://iyqleanlhzcnndzuugkg.supabase.co/storage/v1/object/public/neofrotabkt/foto_perfil_motorista/default.png",
               }}
               style={{

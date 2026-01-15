@@ -48,9 +48,16 @@ interface motoristaProps {
 }
 
 export function useMotorista(motoristaId: any) {
-  const { data, loading, error, refetch } = useQuery<{ motorista: motoristaProps }>(GET_MOTORISTA, {
+  const { data, loading, error, refetch } = useQuery<{
+    motorista: motoristaProps;
+  }>(GET_MOTORISTA, {
     variables: { motoristaId },
     fetchPolicy: "cache-and-network",
   });
-  return { data, loading, error, refetch: refetch || (() => Promise.resolve()) };
+  return {
+    motorista: data?.motorista,
+    loading,
+    error,
+    refetch: refetch || (() => Promise.resolve()),
+  };
 }
