@@ -1,4 +1,5 @@
 import { CorClara, CorEscura } from "@/assets/cores";
+import { AnuncioHome } from "@/componentes/anuncioHome";
 import CardVoucher from "@/componentes/cardVoucher";
 import FuncionariosHome from "@/componentes/funcionairoshome";
 import ModuloFinanceiro from "@/componentes/modulofinanceiro";
@@ -9,10 +10,11 @@ import { useAuth } from "@/hooks/useAuth";
 import { useCarroID } from "@/hooks/useCarro";
 import { useFrota } from "@/hooks/useFrota";
 import { useMotorista } from "@/hooks/useMotorista";
-import { useVouchers } from "@/hooks/useVouchers";
+import { useVouchersMotoristaData } from "@/hooks/useVouchers";
 import { useRouter } from "expo-router";
 import { useState } from "react";
 import {
+  ActivityIndicator,
   RefreshControl,
   ScrollView,
   StyleSheet,
@@ -21,24 +23,34 @@ import {
   View,
 } from "react-native";
 
-const listaVoucher = [<CardVoucher />];
-
 function home() {
   const rota = useRouter();
   const Cor = useColorScheme() === "dark" ? CorEscura : CorClara;
 
   const { user, isLoading } = useAuth();
-  const {
-    listaVouchers,
-    loading,
-    error,
-    refetch: refetchVouchers,
-  } = useVouchers(user?.motoristaId);
   const { motorista, refetch: refetchMotorista } = useMotorista(
     user?.motoristaId
   );
   const { refetch: refetchFrota } = useFrota(user?.motoristaId!);
   const { refetch: refetchCarro } = useCarroID(user?.motoristaId);
+
+  const formatarData = (isoOrDate: string | Date) => {
+    const d = new Date(isoOrDate);
+
+    const y = d.getFullYear();
+    const m = String(d.getMonth() + 1).padStart(2, "0");
+    const day = String(d.getDate()).padStart(2, "0");
+    return `${y}-${m}-${day}`;
+  };
+
+  const hoje = formatarData(new Date());
+
+  const {
+    listaVouchersData,
+    loading: loadingVouchers,
+    error: errorVMD,
+    refetch: refetchVouchers,
+  } = useVouchersMotoristaData(user?.motoristaId || "", hoje);
 
   const [reCarregando, setReCarregando] = useState(false);
   const onRefresh = () => {
@@ -56,6 +68,7 @@ function home() {
   return (
     <>
       <View style={{ flex: 1, backgroundColor: Cor.base }}>
+        {/* <AnuncioHome/> */}
         <TopoInfos segredo={true} fotoPerfil={false} />
         <MotoristaInfos motoristaId={motorista} />
         <ScrollView
@@ -83,9 +96,14 @@ function home() {
             <Text style={{ color: Cor.secundaria }}>Programação do Dia</Text>
             <View style={[styles.divider, { backgroundColor: Cor.primaria }]} />
           </View>
-          {listaVouchers.map((v, index) => {
-            return <CardVoucher key={index} Voucher={v} />;
-          })}
+          {loadingVouchers ? (
+            <ActivityIndicator color={Cor.primaria} />
+          ) : (
+            listaVouchersData.map((v, index) => {
+              return <CardVoucher key={index} voucher={v} />;
+            })
+          )}
+
           <View
             style={{
               width: "100%",

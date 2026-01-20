@@ -2,7 +2,7 @@ import { CorClara, CorEscura } from "@/assets/cores";
 import { useRouter } from "expo-router";
 import { Pressable, Text, useColorScheme, View } from "react-native";
 
-export default function CardVoucher({ Voucher }: any) {
+export default function CardVoucher({ voucher }: any) {
   const Cor = useColorScheme() === "dark" ? CorEscura : CorClara;
 
   const route = useRouter();
@@ -26,7 +26,7 @@ export default function CardVoucher({ Voucher }: any) {
           route.push({
             pathname: "/voucherdetalhes/[idVoucher]",
             params: {
-              idVoucher: Voucher.id,
+              idVoucher: JSON.stringify(voucher),
             },
           });
         }}
@@ -37,9 +37,9 @@ export default function CardVoucher({ Voucher }: any) {
             height: 75,
             overflow: "hidden",
             backgroundColor:
-              Voucher.natureza === "Fixo"
+              voucher.natureza === "Fixo"
                 ? Cor.fixo
-                : Voucher.natureza === "Turno"
+                : voucher.natureza === "Turno"
                 ? Cor.turno
                 : Cor.extra,
             borderTopLeftRadius: 22,
@@ -62,32 +62,39 @@ export default function CardVoucher({ Voucher }: any) {
               allowFontScaling={false}
               style={{
                 color:
-                  Voucher.natureza === "Fixo"
+                  voucher.natureza === "Fixo"
                     ? Cor.textoFixo
-                    : Voucher.natureza === "Turno"
+                    : voucher.natureza === "Turno"
                     ? Cor.textoTurno
                     : Cor.textoExtra,
                 fontWeight: "700",
               }}
             >
-              {Voucher.natureza}
+              {voucher.natureza}
             </Text>
           </Text>
-          <Text
-            allowFontScaling={false}
+          <View
             style={{
-              color:
-                Voucher.natureza === "Fixo"
-                  ? Cor.textoFixo
-                  : Voucher.natureza === "Turno"
-                  ? Cor.textoTurno
-                  : Cor.textoExtra,
-              fontWeight: "bold",
-              fontSize: 14,
+              width: "100%",
             }}
           >
-            {Voucher.origem} x {Voucher.destino}
-          </Text>
+            <Text
+              allowFontScaling={false}
+              style={{
+                color:
+                  voucher.natureza === "Fixo"
+                    ? Cor.textoFixo
+                    : voucher.natureza === "Turno"
+                    ? Cor.textoTurno
+                    : Cor.textoExtra,
+                fontWeight: "bold",
+                fontSize: 14,
+              }}
+              numberOfLines={1}
+            >
+              {voucher.origem} x {voucher.destino}
+            </Text>
+          </View>
           <Text
             allowFontScaling={false}
             style={{ color: Cor.texto2, fontSize: 12 }}
@@ -97,14 +104,14 @@ export default function CardVoucher({ Voucher }: any) {
               style={{
                 fontWeight: "bold",
                 color:
-                  Voucher.natureza === "Fixo"
+                  voucher.natureza === "Fixo"
                     ? Cor.textoFixo
-                    : Voucher.natureza === "Turno"
+                    : voucher.natureza === "Turno"
                     ? Cor.textoTurno
                     : Cor.textoExtra,
               }}
             >
-              {Voucher.passageiros?.length}
+              {voucher.passageiros?.length}
             </Text>
           </Text>
         </View>
@@ -130,16 +137,16 @@ export default function CardVoucher({ Voucher }: any) {
             allowFontScaling={false}
             style={{
               color:
-                Voucher.natureza === "Fixo"
+                voucher.natureza === "Fixo"
                   ? Cor.textoFixo
-                  : Voucher.natureza === "Turno"
+                  : voucher.natureza === "Turno"
                   ? Cor.textoTurno
                   : Cor.textoExtra,
               fontSize: 14,
               fontWeight: "bold",
             }}
           >
-            {new Date(Voucher.dataHoraProgramado).toLocaleTimeString("pt-BR", {
+            {new Date(voucher.dataHoraProgramado).toLocaleTimeString("pt-BR", {
               timeZone: "UTC",
               hour: "2-digit",
               minute: "2-digit",
@@ -151,9 +158,9 @@ export default function CardVoucher({ Voucher }: any) {
             width: "16%",
             aspectRatio: 1,
             backgroundColor:
-              Voucher.natureza === "Fixo"
+              voucher.natureza === "Fixo"
                 ? Cor.fixo + "20"
-                : Voucher.natureza === "Turno"
+                : voucher.natureza === "Turno"
                 ? Cor.turno + "30"
                 : Cor.extra + "20",
             borderRadius: 15,
@@ -166,31 +173,31 @@ export default function CardVoucher({ Voucher }: any) {
             allowFontScaling={false}
             style={{
               color:
-                Voucher.natureza === "Fixo"
+                voucher.natureza === "Fixo"
                   ? Cor.textoFixo
-                  : Voucher.natureza === "Turno"
+                  : voucher.natureza === "Turno"
                   ? Cor.textoTurno
                   : Cor.textoExtra,
               fontFamily: "IconeFill",
               fontSize: 24,
             }}
           >
-            {Voucher.tipoCorrida === "Entrada" ? "login" : "logout"}
+            {voucher.tipoCorrida === "Entrada" ? "login" : "logout"}
           </Text>
           <Text
             allowFontScaling={false}
             style={{
               color:
-                Voucher.natureza === "Fixo"
+                voucher.natureza === "Fixo"
                   ? Cor.textoFixo
-                  : Voucher.natureza === "Turno"
+                  : voucher.natureza === "Turno"
                   ? Cor.textoTurno
                   : Cor.textoExtra,
               fontSize: 10,
               fontWeight: "bold",
             }}
           >
-            {Voucher.tipoCorrida === "Entrada" ? "Entrada" : "Saída"}
+            {voucher.tipoCorrida === "Entrada" ? "Entrada" : "Saída"}
           </Text>
         </View>
       </Pressable>

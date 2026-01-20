@@ -27,7 +27,16 @@ export default function VoucherConcluir() {
 
   const navigation = useNavigation();
 
-  const { idVoucher } = route.params as { idVoucher: number };
+  const [tempoParado, setTempoParado] = useState<0 | 1 | 2 | 3 | 4>(0);
+
+  const { idVoucher, valorViagemTotal } = route.params as {
+    idVoucher: any;
+    valorViagemTotal: number;
+  };
+
+  const voucher = JSON.parse(idVoucher);
+
+  const valoresSomados = (Number(valorViagemTotal) + (Number(voucher.valorHoraParadaRepasse) * tempoParado))
 
   const [signature, setSignature] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -35,6 +44,7 @@ export default function VoucherConcluir() {
 
   const handleSignature = (signature: any) => {
     setSignature(signature);
+    console.log(signature)
     setIsLoading(false);
   };
 
@@ -51,13 +61,6 @@ export default function VoucherConcluir() {
 
     try {
       setIsLoading(true);
-      // Aqui você pode enviar a assinatura para o backend
-      // Exemplo:
-      // await fetch(`${API_URL}/salvar-assinatura`, {
-      //   method: "POST",
-      //   headers: { "Content-Type": "application/json" },
-      //   body: JSON.stringify({ idVoucher, assinatura: signature }),
-      // });
 
       console.log("Assinatura Base64:", signature);
       router.push("../confirmado");
@@ -103,16 +106,25 @@ export default function VoucherConcluir() {
                   marginTop: 10,
                 }}
               >
-                Voucher:{" "}
+                Valor Total:{" "}
                 <Text
                   allowFontScaling={false}
                   style={{
-                    color: Cor.fixo,
+                    color:
+                      voucher?.natureza === "Fixo"
+                        ? Cor.fixo
+                        : voucher?.natureza === "Turno"
+                          ? Cor.turno
+                          : Cor.extra,
                     fontSize: 24,
                     fontWeight: "bold",
                   }}
                 >
-                  {idVoucher}
+                  {" "}
+                  {new Intl.NumberFormat("pt-BR", {
+                    style: "currency",
+                    currency: "BRL",
+                  }).format(Number(valoresSomados))}
                 </Text>
               </Text>
               <View
@@ -123,13 +135,7 @@ export default function VoucherConcluir() {
                   gap: 15,
                 }}
               >
-                <View
-                  style={{
-                    width: "100%",
-                    height: 40,
-                    backgroundColor: Cor.base2,
-                  }}
-                ></View>
+                <TempoParado value={tempoParado} onChange={setTempoParado} />
                 <View
                   style={{
                     width: "100%",
@@ -260,6 +266,67 @@ export default function VoucherConcluir() {
           </TouchableWithoutFeedback>
         </KeyboardAvoidingView>
       </View>
+    </View>
+  );
+}
+
+type Props = {
+  value: 0 | 1 | 2 | 3 | 4;
+  onChange: (v: 0 | 1 | 2 | 3 | 4) => void;
+};
+
+export function TempoParado({ value, onChange }: Props) {
+  const options: Array<0 | 1 | 2 | 3 | 4> = [0, 1, 2, 3, 4];
+
+  const Cor = useColorScheme() === "dark" ? CorEscura : CorClara;
+
+  return (
+    <View
+      accessibilityRole="radiogroup"
+      style={{
+        flexDirection: "row",
+        gap: 10,
+        alignItems: "center",
+        justifyContent: "space-between",
+      }}
+    >
+      <Text style={{ color: Cor.texto2 }}>Tempo {"\n"}Parado: </Text>
+      {options.map((opt) => {
+        const selected = value === opt;
+
+        return (
+          <Pressable
+            key={opt}
+            onPress={() => {
+              onChange(opt);
+            }}
+            accessibilityRole="radio"
+            accessibilityState={{ selected }}
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: 10,
+              paddingVertical: 10,
+              paddingHorizontal: 14,
+              borderRadius: 12,
+              borderWidth: 1,
+              borderColor: selected ? Cor.primaria : Cor.texto2,
+              backgroundColor: selected ? Cor.primaria + 90 : "tranparent",
+              opacity: selected ? 1 : 0.7,
+            }}
+          >
+            <Text
+              style={{
+                fontSize: 16,
+                color: selected ? Cor.texto1 : Cor.texto2,
+              }}
+            >
+              {opt}h
+            </Text>
+          </Pressable>
+        );
+      })}
     </View>
   );
 }

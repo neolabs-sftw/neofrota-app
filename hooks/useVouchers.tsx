@@ -1,9 +1,12 @@
 import { gql } from "@apollo/client";
 import { useQuery } from "@apollo/client/react";
 
-const GET_VOUCHERS = gql`
-  query VouchersPorMotorista($motoristaId: ID!) {
-    vouchersPorMotorista(motoristaId: $motoristaId) {
+const GET_VOUCHERS_MOTORISTA_DATA = gql`
+  query VouchersMotoristaData($motoristaId: ID!, $diaSelecionado: String!) {
+    vouchersMotoristaData(
+      motoristaId: $motoristaId
+      diaSelecionado: $diaSelecionado
+    ) {
       id
       origem
       destino
@@ -29,12 +32,10 @@ const GET_VOUCHERS = gql`
         id
         nome
         fotoLogoCliente
-        statusCliente
         rSocial
+        statusCliente
       }
       unidadeCliente {
-        id
-        nome
         endBairro
         endCep
         endCidade
@@ -42,28 +43,75 @@ const GET_VOUCHERS = gql`
         endNumero
         endRua
         endUf
+        id
+        statusUnidadeCliente
+        cnpj
+        nome
+      }
+      motorista {
+        cnh
+        cpf
+        nome
+        fotoMotorista
+        email
+        statusCnh
+        statusMotorista
+        tipoMotorista
+        vCnh
+      }
+      carro {
+        id
+        placa
+        marca
+        modelo
+        cor
+        crlv
+        vCrlv
+        chassi
+        ano
+      }
+      adminUsuario {
+        id
+        nome
+      }
+      solicitante {
+        funcao
+        fotoUrlSolicitante
+        nome
+        telefone
       }
       passageiros {
+        horarioEmbarqueReal
+        id
+        rateio
         statusPresenca
         passageiroId {
-          id
-          nome
-          telefone
-          pontoApanha
+          ativo
+          email
           endBairro
           endCidade
           endNumero
           endRua
           fotoPerfilPassageiro
+          horarioEmbarque
+          id
           matricula
+          nome
+          pontoApanha
+          telefone
+          centroCustoClienteId {
+            id
+            nome
+            codigo
+          }
         }
       }
     }
   }
 `;
 
-interface VouchersData {
-  vouchersPorMotorista: Array<{
+interface VouchersMotoristaData {
+  vouchersMotoristaData: Array<{
     id: string;
     origem: string;
     destino: string;
@@ -122,191 +170,27 @@ interface VouchersData {
   }>;
 }
 
-export function useVouchers(motoristaId?: string) {
-  const { data, loading, error, refetch } = useQuery<VouchersData>(
-    GET_VOUCHERS,
+export function useVouchersMotoristaData(
+  motoristaId: string,
+  diaSelecionado: string
+) {
+  const { data, loading, error, refetch } = useQuery<VouchersMotoristaData>(
+    GET_VOUCHERS_MOTORISTA_DATA,
     {
-      variables: { motoristaId },
+      variables: {
+        motoristaId,
+        diaSelecionado,
+      },
       fetchPolicy: "cache-and-network",
     }
   );
 
   return {
-    listaVouchers: data?.vouchersPorMotorista || [],
-    loading,
-    error,
-    refetch: (id?: string) => refetch({ motoristaId: id ?? motoristaId! }),
-  };
-}
-
-const GET_VOUCHER_BY_ID = gql`
-  query Voucher($voucherId: ID!) {
-    voucher(id: $voucherId) {
-      id
-      origem
-      destino
-      dataHoraProgramado
-      dataHoraConclusao
-      dataHoraCriacao
-      qntTempoParado
-      assinatura
-      observacaoMotorista
-      observacao
-      valorViagem
-      valorViagemRepasse
-      valorDeslocamento
-      valorDeslocamentoRepasse
-      valorHoraParada
-      valorHoraParadaRepasse
-      valorPedagio
-      valorEstacionamento
-      natureza
-      tipoCorrida
-      status
-      empresaCliente {
-        nome
-        rSocial
-        fotoLogoCliente
-      }
-      unidadeCliente {
-        nome
-        endBairro
-        endCep
-        endCidade
-        endComplemento
-        endNumero
-        endRua
-        endUf
-      }
-      motorista {
-        id
-        nome
-        email
-        senha
-        fotoMotorista
-        cpf
-        cnh
-        vCnh
-        statusMotorista
-        tipoMotorista
-        dataCriacao
-        statusCnh
-      }
-      carro {
-        ano
-        cor
-        marca
-        modelo
-        placa
-      }
-      adminUsuario {
-        id
-        nome
-      }
-      solicitante {
-        id
-        nome
-        fotoUrlSolicitante
-        telefone
-      }
-      passageiros {
-        id
-        horarioEmbarqueReal
-        statusPresenca
-        rateio
-        passageiroId {
-          id
-          nome
-          matricula
-          telefone
-          email
-          ativo
-          fotoPerfilPassageiro
-          endRua
-          endNumero
-          endBairro
-          endCidade
-          pontoApanha
-          horarioEmbarque
-          centroCustoClienteId {
-            id
-            nome
-            codigo
-          }
-        }
-      }
-    }
-  }
-`;
-
-interface Voucher {
-    voucher:{
-     id: string;
-    origem: string;
-    destino: string;
-    dataHoraProgramado: string;
-    dataHoraConclusao: string | null;
-    dataHoraCriacao: string;
-    qntTempoParado: number;
-    assinatura: string | null;
-    observacaoMotorista: string | null;
-    observacao: string | null;
-    valorViagem: number;
-    valorViagemRepasse: number;
-    valorDeslocamento: number;
-    valorDeslocamentoRepasse: number;
-    valorHoraParada: number;
-    valorHoraParadaRepasse: number;
-    valorPedagio: number;
-    valorEstacionamento: number;
-    natureza: string;
-    tipoCorrida: string;
-    status: string;
-    empresaCliente: {
-      id: string;
-      nome: string;
-      fotoLogoCliente: string | null;
-      statusCliente: boolean;
-      rSocial: string;
-    };
-    unidadeCliente: {
-      id: string;
-      nome: string;
-      endBairro: string;
-
-      endCep: string;
-      endCidade: string;
-      endComplemento: string | null;
-      endNumero: string;
-      endRua: string;
-      endUf: string;
-    };
-    passageiros: Array<{
-      statusPresenca: string;
-      passageiroId: {
-        id: string;
-        nome: string;
-        telefone: string;
-        pontoApanha: string | null;
-        endBairro: string;
-        endCidade: string;
-        endNumero: string;
-        endRua: string;
-        fotoPerfilPassageiro: string | null;
-        matricula: string;
-      };
-    }>;}
-}
-
-export function useVoucherId(voucherId: string) {
-  const { data, loading, error, refetch } = useQuery<Voucher>(GET_VOUCHER_BY_ID, {
-    variables: { voucherId },
-    fetchPolicy: "cache-and-network",
-  });
-  return {
-    voucher: data?.voucher,
+    listaVouchersData: data?.vouchersMotoristaData || [],
     loading,
     error,
     refetch: refetch || Promise.resolve(),
-  }
+  };
 }
+
+

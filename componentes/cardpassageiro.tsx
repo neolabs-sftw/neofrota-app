@@ -2,7 +2,9 @@ import { CorClara, CorEscura } from "@/assets/cores";
 import { BlurView } from "expo-blur";
 import { useState } from "react";
 import {
+  Alert,
   Image,
+  Linking,
   Modal,
   Pressable,
   StyleSheet,
@@ -11,16 +13,46 @@ import {
   View,
 } from "react-native";
 
-export default function CardPassageiro() {
+export default function CardPassageiro({
+  p,
+  natureza,
+}: {
+  p: any;
+  natureza: string;
+}) {
   const [modalVisivel, setModalVisivel] = useState(false);
-  const [passageiroAusente, setPassageiroAusente] = useState(true);
+  const [statusPresenca, setStatusPresenca] = useState<string>("Agendado");
   const Cor = useColorScheme() === "dark" ? CorEscura : CorClara;
+
+  const passageiro = p?.passageiroId;
+
+  const abrirLink = async (url: string) => {
+    const verificacao = await Linking.canOpenURL(url);
+
+    if (!verificacao) {
+      Alert.alert("Ops", "Não dá pra abrir esse link no seu aparelho.");
+      return;
+    }
+
+    await Linking.openURL(url);
+  };
+
+  function formatarTelefone(telefone: string) {
+    let digitos = telefone.replace(/\D/g, "");
+
+    digitos = digitos.replace(/^0+/, "");
+
+    if (digitos.length === 11) digitos = "55" + digitos;
+
+    return digitos;
+  }
+
   return (
     <>
       <Pressable
         style={{
           flexDirection: "row",
-          backgroundColor: passageiroAusente ? Cor.base2 : Cor.atencao + 50,
+          backgroundColor: statusPresenca ? Cor.base2 : Cor.atencao + 50,
           width: "100%",
           height: 60,
           borderRadius: 22,
@@ -34,7 +66,10 @@ export default function CardPassageiro() {
           shadowOpacity: 0.05,
           shadowRadius: 2,
         }}
-        onLongPress={() => setPassageiroAusente(!passageiroAusente)}
+        onLongPress={() => setStatusPresenca("Ausente")}
+        onPress={() => {
+          setStatusPresenca("Presente");
+        }}
       >
         <View
           style={{
@@ -49,12 +84,19 @@ export default function CardPassageiro() {
             style={{
               fontSize: 16,
               fontWeight: "bold",
-              color: passageiroAusente ? Cor.fixo : Cor.atencao,
+              color: statusPresenca
+                ? natureza === "Fixo"
+                  ? Cor.textoFixo
+                  : natureza === "Turno"
+                  ? Cor.textoTurno
+                  : Cor.textoExtra
+                : Cor.atencao,
               textOverflow: "ellipsis",
               overflow: "hidden",
             }}
           >
-            {passageiroAusente ? null : "(Ausente)"} Jeferson da Rocha Lima
+            {statusPresenca ? null : "(Ausente)"}{" "}
+            {passageiro.nome || "pensando"}
           </Text>
           <View
             style={{
@@ -68,7 +110,7 @@ export default function CardPassageiro() {
                 allowFontScaling={false}
                 style={{
                   fontSize: 12,
-                  color: passageiroAusente ? Cor.texto2 : Cor.texto1,
+                  color: statusPresenca ? Cor.texto2 : Cor.texto1,
                 }}
               >
                 Cargo
@@ -80,7 +122,7 @@ export default function CardPassageiro() {
                 allowFontScaling={false}
                 style={{
                   fontSize: 12,
-                  color: passageiroAusente ? Cor.texto2 : Cor.texto1,
+                  color: statusPresenca ? Cor.texto2 : Cor.texto1,
                 }}
               >
                 Centro de Custo
@@ -164,15 +206,16 @@ export default function CardPassageiro() {
               >
                 <Image
                   source={{
-                    uri: "https://www.shutterstock.com/image-vector/default-avatar-profile-icon-social-600nw-1906669723.jpg",
+                    uri:
+                      passageiro?.fotoPerfilPassageiro ||
+                      "https://www.shutterstock.com/image-vector/default-avatar-profile-icon-social-600nw-1906669723.jpg",
                   }}
                   style={{
                     width: 80,
                     aspectRatio: 1,
-                    backgroundColor: "red",
                     borderRadius: 14,
                   }}
-                ></Image>
+                />
                 <View
                   style={{
                     flexDirection: "column",
@@ -197,7 +240,7 @@ export default function CardPassageiro() {
                         color: Cor.texto1,
                       }}
                     >
-                      Jeferson da Rocha Lima
+                      {passageiro.nome}
                     </Text>
                   </View>
                   <View
@@ -215,9 +258,9 @@ export default function CardPassageiro() {
                       allowFontScaling={false}
                       style={{ fontSize: 12, color: Cor.texto1 }}
                     >
-                      (71) 99999-9999
+                      {passageiro.telefone}
                     </Text>
-                    <View
+                    <Pressable
                       style={{
                         alignItems: "center",
                         justifyContent: "center",
@@ -226,6 +269,13 @@ export default function CardPassageiro() {
                         backgroundColor: Cor.primaria,
                         borderTopRightRadius: 12,
                         borderBottomRightRadius: 12,
+                      }}
+                      onPress={() => {
+                        abrirLink(
+                          `https://wa.me/${formatarTelefone(
+                            passageiro.telefone
+                          )}`
+                        );
                       }}
                     >
                       <Text
@@ -238,7 +288,7 @@ export default function CardPassageiro() {
                       >
                         phone
                       </Text>
-                    </View>
+                    </Pressable>
                   </View>
                 </View>
               </View>
@@ -292,7 +342,7 @@ export default function CardPassageiro() {
                     allowFontScaling={false}
                     style={{ fontSize: 14, color: Cor.texto1 }}
                   >
-                    Av. Rivaldo Gomes Guimarães
+                    {passageiro.endRua}
                   </Text>
                 </View>
               </View>
@@ -325,7 +375,7 @@ export default function CardPassageiro() {
                     ellipsizeMode="tail"
                     style={{ fontSize: 14, color: Cor.texto1 }}
                   >
-                    105-A
+                    {passageiro.endNumero}
                   </Text>
                 </View>
                 <View
@@ -349,7 +399,7 @@ export default function CardPassageiro() {
                     ellipsizeMode="tail"
                     style={{ fontSize: 14, color: Cor.texto1 }}
                   >
-                    Centro
+                    {passageiro.endBairro}
                   </Text>
                 </View>
               </View>
@@ -382,7 +432,7 @@ export default function CardPassageiro() {
                     ellipsizeMode="tail"
                     style={{ fontSize: 14, color: Cor.texto1 }}
                   >
-                    Simões Filho
+                    {passageiro.endCidade}
                   </Text>
                 </View>
                 <View
@@ -406,7 +456,7 @@ export default function CardPassageiro() {
                     ellipsizeMode="tail"
                     style={{ fontSize: 14, color: Cor.texto1 }}
                   >
-                    06:00
+                    {passageiro.horarioEmbarque}
                   </Text>
                 </View>
               </View>
@@ -435,10 +485,7 @@ export default function CardPassageiro() {
                     textAlign: "justify",
                   }}
                 >
-                  lorem ipsum dolor sit amet consectetur adipiscing elit sed do
-                  eiusmod tempor incididunt ut labore et dolore magna aliqua ut
-                  enim ad minim veniam quis nostrud exercitation ullamco laboris
-                  nisi ut aliquip ex ea commodo consequat
+                  {passageiro.pontoApanha || "Sem Complemento"}
                 </Text>
               </View>
             </Pressable>
