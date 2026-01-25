@@ -5,7 +5,13 @@ import TopoInfos from "@/componentes/topoinfos";
 import { useAuth } from "@/hooks/useAuth";
 import { useVouchersMotoristaData } from "@/hooks/useVouchers";
 import { useState } from "react";
-import { ScrollView, Text, useColorScheme, View } from "react-native";
+import {
+  ActivityIndicator,
+  ScrollView,
+  Text,
+  useColorScheme,
+  View,
+} from "react-native";
 import { Calendar, LocaleConfig } from "react-native-calendars";
 
 export default function Calendario() {
@@ -117,7 +123,6 @@ export default function Calendario() {
                 height: 320,
               }}
               onDayPress={(day) => {
-                console.log("selected day", day);
                 setDiaSelecionado(day.dateString);
               }}
               theme={{
@@ -166,9 +171,13 @@ export default function Calendario() {
           />
         </View>
         <ScrollView contentContainerStyle={{ paddingBottom: 100 }}>
-          {listaVouchersData.map((v, index) => {
-            return <CardVoucher key={index} voucher={v} />;
-          })}
+          {loadingVouchers ? (
+            <ActivityIndicator color={Cor.primaria} />
+          ) : (
+            listaVouchersData.map((v, index) => {
+              return <CardVoucher key={index} voucher={v} />;
+            })
+          )}
         </ScrollView>
       </View>
       <Navmenu

@@ -5,6 +5,7 @@ import TopoInfos from "@/componentes/topoinfos";
 import { useRoute } from "@react-navigation/native";
 import { BlurView } from "expo-blur";
 import { useRouter } from "expo-router";
+import { useEffect, useState } from "react";
 import {
   Image,
   Pressable,
@@ -29,6 +30,37 @@ export default function VoucherDetalhes() {
     voucher.valorViagemRepasse +
     voucher.valorDeslocamentoRepasse +
     voucher.valorPedagio;
+
+  const [passageirosAtualizados, setPassageirosAtualizados] = useState<any[]>(
+    [],
+  );
+
+  const marcarAusente = (voucherPassageiroId: string) => {
+    setPassageirosAtualizados((prev) =>
+      prev.map((p) =>
+        p.id === voucherPassageiroId
+          ? {
+              ...p,
+              statusPresenca:
+                p.statusPresenca !== "Ausente"
+                  ? "Ausente"
+                  : p.statusPresenca !== "Presente"
+                    ? "Presente"
+                    : "Ausente",
+            }
+          : p,
+      ),
+    );
+    console.log(
+      voucher?.passageiros,
+      "---------------",
+      passageirosAtualizados,
+    );
+  };
+
+  useEffect(() => {
+    setPassageirosAtualizados(voucher?.passageiros);
+  }, [voucher?.id]);
 
   return (
     <View style={{ flex: 1, backgroundColor: Cor.base }}>
@@ -204,8 +236,8 @@ export default function VoucherDetalhes() {
                       voucher?.natureza === "Fixo"
                         ? Cor.fixo
                         : voucher?.natureza === "Turno"
-                        ? Cor.turno
-                        : Cor.extra,
+                          ? Cor.turno
+                          : Cor.extra,
                   }}
                 >
                   {voucher?.id}
@@ -230,8 +262,8 @@ export default function VoucherDetalhes() {
                       voucher?.natureza === "Fixo"
                         ? Cor.fixo
                         : voucher?.natureza === "Turno"
-                        ? Cor.turno
-                        : Cor.extra,
+                          ? Cor.turno
+                          : Cor.extra,
                   }}
                 >
                   {voucher?.passageiros?.length}
@@ -265,8 +297,8 @@ export default function VoucherDetalhes() {
                     voucher?.natureza === "Fixo"
                       ? Cor.fixo
                       : voucher?.natureza === "Turno"
-                      ? Cor.turno
-                      : Cor.extra,
+                        ? Cor.turno
+                        : Cor.extra,
                 }}
               >
                 {voucher?.dataHoraProgramado
@@ -279,7 +311,7 @@ export default function VoucherDetalhes() {
                         year: "2-digit",
                         hour: "2-digit",
                         minute: "2-digit",
-                      }
+                      },
                     )
                   : "--/--/----"}
               </Text>
@@ -320,8 +352,8 @@ export default function VoucherDetalhes() {
                     voucher?.natureza === "Fixo"
                       ? Cor.fixo
                       : voucher?.natureza === "Turno"
-                      ? Cor.turno
-                      : Cor.extra,
+                        ? Cor.turno
+                        : Cor.extra,
                 }}
               >
                 {new Intl.NumberFormat("pt-BR", {
@@ -346,8 +378,8 @@ export default function VoucherDetalhes() {
                   voucher?.natureza === "Fixo"
                     ? Cor.fixo + "50"
                     : voucher?.natureza === "Turno"
-                    ? Cor.turno + "50"
-                    : Cor.extra + "50",
+                      ? Cor.turno + "50"
+                      : Cor.extra + "50",
               }}
             >
               <Text
@@ -357,8 +389,8 @@ export default function VoucherDetalhes() {
                     voucher?.natureza === "Fixo"
                       ? Cor.fixo
                       : voucher?.natureza === "Turno"
-                      ? Cor.turno
-                      : Cor.extra,
+                        ? Cor.turno
+                        : Cor.extra,
                   fontFamily: "IconeFill",
                   fontWeight: "bold",
                   fontSize: 20,
@@ -373,8 +405,8 @@ export default function VoucherDetalhes() {
                     voucher?.natureza === "Fixo"
                       ? Cor.fixo
                       : voucher?.natureza === "Turno"
-                      ? Cor.turno
-                      : Cor.extra,
+                        ? Cor.turno
+                        : Cor.extra,
                   fontSize: 18,
                 }}
               >
@@ -402,14 +434,19 @@ export default function VoucherDetalhes() {
         <ScrollView
           showsVerticalScrollIndicator={false}
           contentContainerStyle={{
-            paddingBottom: 120,
+            paddingBottom: 150,
             paddingHorizontal: 20,
             paddingTop: 10,
           }}
         >
-          {voucher?.passageiros?.map((p: any, index: any) => {
+          {passageirosAtualizados.map((p: any, index: any) => {
             return (
-              <CardPassageiro p={p} natureza={voucher?.natureza} key={index} />
+              <CardPassageiro
+                p={p}
+                natureza={voucher?.natureza}
+                key={index}
+                onLongPress={() => marcarAusente(p.id)}
+              />
             );
           })}
         </ScrollView>
@@ -418,7 +455,10 @@ export default function VoucherDetalhes() {
         onPress={() =>
           router.push({
             pathname: "/voucherconcluir/[idVoucher]",
-            params: { idVoucher: JSON.stringify(voucher), valorViagemTotal: valorViagemTotal },
+            params: {
+              idVoucher: JSON.stringify(voucher),
+              valorViagemTotal: valorViagemTotal,
+            },
           })
         }
         style={{

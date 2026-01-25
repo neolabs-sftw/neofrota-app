@@ -1,5 +1,5 @@
 import { gql } from "@apollo/client";
-import { useQuery } from "@apollo/client/react";
+import { useMutation, useQuery } from "@apollo/client/react";
 
 const GET_VOUCHERS_MOTORISTA_DATA = gql`
   query VouchersMotoristaData($motoristaId: ID!, $diaSelecionado: String!) {
@@ -153,6 +153,9 @@ interface VouchersMotoristaData {
       endUf: string;
     };
     passageiros: Array<{
+      id: string;
+      horarioEmbarqueReal: string;
+      rateio: number;
       statusPresenca: string;
       passageiroId: {
         id: string;
@@ -165,6 +168,11 @@ interface VouchersMotoristaData {
         endRua: string;
         fotoPerfilPassageiro: string | null;
         matricula: string;
+        centroCustoClienteId: {
+          id: string;
+          nome: string;
+          codigo: string;
+        };
       };
     }>;
   }>;
@@ -172,7 +180,7 @@ interface VouchersMotoristaData {
 
 export function useVouchersMotoristaData(
   motoristaId: string,
-  diaSelecionado: string
+  diaSelecionado: string,
 ) {
   const { data, loading, error, refetch } = useQuery<VouchersMotoristaData>(
     GET_VOUCHERS_MOTORISTA_DATA,
@@ -182,7 +190,7 @@ export function useVouchersMotoristaData(
         diaSelecionado,
       },
       fetchPolicy: "cache-and-network",
-    }
+    },
   );
 
   return {
@@ -193,4 +201,57 @@ export function useVouchersMotoristaData(
   };
 }
 
+const EDIT_VOUCHER = gql`
+  mutation EditarVoucher($input: VoucherUpdateInput!) {
+    editarVoucher(input: $input) {
+      id
+    }
+  }
+`;
 
+interface VoucherPassageiroUpdateInput {
+  id: string;
+  horarioEmbarqueReal: string;
+  statusPresenca: string;
+  rateio: number;
+}
+
+interface VoucherUpdateInput {
+  id: string;
+  dataHoraConclusao: string | null;
+  qntTempoParado: number;
+  assinatura: string | null;
+  observacaoMotorista: string | null;
+  valorViagem: number;
+  valorViagemRepasse: number;
+  valorDeslocamento: number;
+  valorDeslocamentoRepasse: number;
+  valorHoraParada: number;
+  valorHoraParadaRepasse: number;
+  valorPedagio: number;
+  valorEstacionamento: number;
+  status: string;
+  passageiros: VoucherPassageiroUpdateInput[];
+}
+
+export function useEditarVoucher(voucherId: string) {
+  const [editar, { data, loading, error }] = useMutation(EDIT_VOUCHER);
+
+  const editarVoucher = (input: Omit<VoucherUpdateInput, "id">) => {
+    return editar({
+      variables: {
+        input: {
+          id: voucherId,
+          ...input,
+        },
+      },
+    });
+  };
+
+  return {
+    editarVoucher,
+    data,
+    loading,
+    error,
+  };
+}

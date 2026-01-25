@@ -29,14 +29,13 @@ function home() {
 
   const { user, isLoading } = useAuth();
   const { motorista, refetch: refetchMotorista } = useMotorista(
-    user?.motoristaId
+    user?.motoristaId,
   );
   const { refetch: refetchFrota } = useFrota(user?.motoristaId!);
   const { refetch: refetchCarro } = useCarroID(user?.motoristaId);
 
   const formatarData = (isoOrDate: string | Date) => {
     const d = new Date(isoOrDate);
-
     const y = d.getFullYear();
     const m = String(d.getMonth() + 1).padStart(2, "0");
     const day = String(d.getDate()).padStart(2, "0");

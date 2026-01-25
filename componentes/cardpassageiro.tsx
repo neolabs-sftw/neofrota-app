@@ -16,12 +16,15 @@ import {
 export default function CardPassageiro({
   p,
   natureza,
+  onLongPress
 }: {
   p: any;
   natureza: string;
+  onLongPress: () => void;
 }) {
   const [modalVisivel, setModalVisivel] = useState(false);
-  const [statusPresenca, setStatusPresenca] = useState<string>("Agendado");
+  // const statusPresenca = true
+  const statusPresenca = p.statusPresenca !== "Ausente" ? true : false
   const Cor = useColorScheme() === "dark" ? CorEscura : CorClara;
 
   const passageiro = p?.passageiroId;
@@ -48,7 +51,45 @@ export default function CardPassageiro({
   }
 
   return (
-    <>
+    <View>
+      {statusPresenca ? null : (
+        <View
+          style={{
+            position: "absolute",
+            alignSelf: "center",
+            top: "20%",
+            left: "45%",
+            alignItems: "center",
+            justifyContent: "center",
+            flexDirection: "row",
+            width: "50%",
+            padding: 5,
+            backgroundColor: Cor.base,
+            zIndex: 10,
+            borderRadius: 12,
+            borderWidth: 1,
+            borderColor: Cor.texto2 + 50,
+            shadowColor: "black",
+          shadowOffset: {
+            width: 2,
+            height: 2,
+          },
+          shadowOpacity: 0.05,
+          shadowRadius: 2,
+          }}
+        >
+          <Text
+            style={{
+              fontSize: 22,
+              fontWeight: "bold",
+              zIndex: 10,
+              color: Cor.atencao,
+            }}
+          >
+            Ausente
+          </Text>
+        </View>
+      )}
       <Pressable
         style={{
           flexDirection: "row",
@@ -58,6 +99,7 @@ export default function CardPassageiro({
           borderRadius: 22,
           marginBottom: 10,
           padding: 10,
+          opacity: statusPresenca ? 1 : 0.2,
           shadowColor: "black",
           shadowOffset: {
             width: 2,
@@ -66,10 +108,8 @@ export default function CardPassageiro({
           shadowOpacity: 0.05,
           shadowRadius: 2,
         }}
-        onLongPress={() => setStatusPresenca("Ausente")}
-        onPress={() => {
-          setStatusPresenca("Presente");
-        }}
+        // onLongPress={() => setStatusPresenca(!statusPresenca)}
+        onLongPress={onLongPress}
       >
         <View
           style={{
@@ -88,15 +128,14 @@ export default function CardPassageiro({
                 ? natureza === "Fixo"
                   ? Cor.textoFixo
                   : natureza === "Turno"
-                  ? Cor.textoTurno
-                  : Cor.textoExtra
+                    ? Cor.textoTurno
+                    : Cor.textoExtra
                 : Cor.atencao,
               textOverflow: "ellipsis",
               overflow: "hidden",
             }}
           >
-            {statusPresenca ? null : "(Ausente)"}{" "}
-            {passageiro.nome || "pensando"}
+            {passageiro?.nome || "pensando"}
           </Text>
           <View
             style={{
@@ -110,22 +149,31 @@ export default function CardPassageiro({
                 allowFontScaling={false}
                 style={{
                   fontSize: 12,
-                  color: statusPresenca ? Cor.texto2 : Cor.texto1,
+                  color: statusPresenca ? Cor.texto2 : Cor.atencao + 99,
                 }}
               >
-                Cargo
+                Horário: <Text style={{fontWeight: "bold"}}>{passageiro?.horarioEmbarque}</Text>
               </Text>
             </View>
-            <View style={[styles.dividerH, { backgroundColor: Cor.texto1 }]} />
+            <View
+              style={[
+                styles.dividerH,
+                {
+                  backgroundColor: statusPresenca
+                    ? Cor.texto2
+                    : Cor.atencao + 99,
+                },
+              ]}
+            />
             <View style={{ width: "48%" }}>
               <Text
                 allowFontScaling={false}
                 style={{
                   fontSize: 12,
-                  color: statusPresenca ? Cor.texto2 : Cor.texto1,
+                  color: statusPresenca ? Cor.texto2 : Cor.atencao + 99,
                 }}
               >
-                Centro de Custo
+                Custo: <Text style={{fontWeight: "bold"}}>{passageiro?.centroCustoClienteId.nome}</Text>
               </Text>
             </View>
           </View>
@@ -136,14 +184,16 @@ export default function CardPassageiro({
             justifyContent: "center",
             alignItems: "center",
             borderRadius: 16,
-            backgroundColor: Cor.texto2 + "80",
+            backgroundColor: statusPresenca
+              ? Cor.texto2 + 80
+              : Cor.atencao + 50,
           }}
           onPress={() => setModalVisivel(true)}
         >
           <Text
             allowFontScaling={false}
             style={{
-              color: Cor.texto1,
+              color: statusPresenca ? Cor.texto1 : Cor.atencao,
               textAlign: "center",
               fontWeight: "700",
             }}
@@ -240,7 +290,7 @@ export default function CardPassageiro({
                         color: Cor.texto1,
                       }}
                     >
-                      {passageiro.nome}
+                      {passageiro?.nome}
                     </Text>
                   </View>
                   <View
@@ -258,7 +308,7 @@ export default function CardPassageiro({
                       allowFontScaling={false}
                       style={{ fontSize: 12, color: Cor.texto1 }}
                     >
-                      {passageiro.telefone}
+                      {passageiro?.telefone}
                     </Text>
                     <Pressable
                       style={{
@@ -273,8 +323,8 @@ export default function CardPassageiro({
                       onPress={() => {
                         abrirLink(
                           `https://wa.me/${formatarTelefone(
-                            passageiro.telefone
-                          )}`
+                            passageiro?.telefone,
+                          )}`,
                         );
                       }}
                     >
@@ -342,7 +392,7 @@ export default function CardPassageiro({
                     allowFontScaling={false}
                     style={{ fontSize: 14, color: Cor.texto1 }}
                   >
-                    {passageiro.endRua}
+                    {passageiro?.endRua}
                   </Text>
                 </View>
               </View>
@@ -375,7 +425,7 @@ export default function CardPassageiro({
                     ellipsizeMode="tail"
                     style={{ fontSize: 14, color: Cor.texto1 }}
                   >
-                    {passageiro.endNumero}
+                    {passageiro?.endNumero}
                   </Text>
                 </View>
                 <View
@@ -399,7 +449,7 @@ export default function CardPassageiro({
                     ellipsizeMode="tail"
                     style={{ fontSize: 14, color: Cor.texto1 }}
                   >
-                    {passageiro.endBairro}
+                    {passageiro?.endBairro}
                   </Text>
                 </View>
               </View>
@@ -432,7 +482,7 @@ export default function CardPassageiro({
                     ellipsizeMode="tail"
                     style={{ fontSize: 14, color: Cor.texto1 }}
                   >
-                    {passageiro.endCidade}
+                    {passageiro?.endCidade}
                   </Text>
                 </View>
                 <View
@@ -456,7 +506,7 @@ export default function CardPassageiro({
                     ellipsizeMode="tail"
                     style={{ fontSize: 14, color: Cor.texto1 }}
                   >
-                    {passageiro.horarioEmbarque}
+                    {passageiro?.horarioEmbarque}
                   </Text>
                 </View>
               </View>
@@ -485,14 +535,14 @@ export default function CardPassageiro({
                     textAlign: "justify",
                   }}
                 >
-                  {passageiro.pontoApanha || "Sem Complemento"}
+                  {passageiro?.pontoApanha || "Sem Complemento"}
                 </Text>
               </View>
             </Pressable>
           </BlurView>
         </Pressable>
       </Modal>
-    </>
+    </View>
   );
 }
 

@@ -2,8 +2,8 @@ import { ApolloClient, HttpLink, InMemoryCache } from "@apollo/client";
 
 const client = new ApolloClient({
   link: new HttpLink({
-    uri: "https://neofrotaapi.vercel.app/graphql",
-    // uri: "http://192.168.1.2:4000/graphql",
+    // uri: "https://neofrotaapi.vercel.app/graphql",
+    uri: "http://192.168.1.2:4000/graphql",
     // uri: "http://192.168.100.78:4000/graphql",
   }),
   cache: new InMemoryCache(),

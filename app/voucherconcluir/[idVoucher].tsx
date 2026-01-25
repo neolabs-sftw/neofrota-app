@@ -1,5 +1,6 @@
 import { CorClara, CorEscura } from "@/assets/cores";
 import TopoInfos from "@/componentes/topoinfos";
+import { useEditarVoucher } from "@/hooks/useVouchers";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import { BlurView } from "expo-blur";
 import { router } from "expo-router";
@@ -29,14 +30,19 @@ export default function VoucherConcluir() {
 
   const [tempoParado, setTempoParado] = useState<0 | 1 | 2 | 3 | 4>(0);
 
-  const { idVoucher, valorViagemTotal } = route.params as {
+  const { idVoucher } = route.params as {
     idVoucher: any;
-    valorViagemTotal: number;
   };
 
   const voucher = JSON.parse(idVoucher);
 
-  const valoresSomados = (Number(valorViagemTotal) + (Number(voucher.valorHoraParadaRepasse) * tempoParado))
+  const valorViagemTotal =
+    voucher.valorViagem +
+    voucher.valorDeslocamento +
+    voucher.valorHoraParada * tempoParado +
+    voucher.valorPedagio;
+
+  const [obsMotorista, setObsMotorista] = useState<string>("");
 
   const [signature, setSignature] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -44,7 +50,6 @@ export default function VoucherConcluir() {
 
   const handleSignature = (signature: any) => {
     setSignature(signature);
-    console.log(signature)
     setIsLoading(false);
   };
 
@@ -52,6 +57,66 @@ export default function VoucherConcluir() {
     setSignature(null);
     ref.current.clearSignature();
   };
+
+  const handleEnd = () => {
+    setIsLoading(true);
+    ref.current?.readSignature();
+  };
+
+  const { editarVoucher, data, loading, error } = useEditarVoucher(voucher.id);
+
+  const rateioVoucher =
+    (voucher.valorViagem +
+      voucher.valorDeslocamento +
+      voucher.valorHoraParada +
+      voucher.valorPedagio) /
+    voucher.passageiros.length;
+
+  const fechamento = {
+    assinatura: signature,
+    dataHoraConclusao: new Date().toISOString(),
+    qntTempoParado: tempoParado,
+    observacaoMotorista: obsMotorista,
+    valorViagem: voucher.valorViagem,
+    valorViagemRepasse: voucher.valorViagemRepasse,
+    valorDeslocamento: voucher.valorDeslocamento,
+    valorDeslocamentoRepasse: voucher.valorDeslocamentoRepasse,
+    valorHoraParada: tempoParado * voucher.valorHoraParada,
+    valorHoraParadaRepasse: tempoParado * voucher.valorHoraParadaRepasse,
+    valorPedagio: 0,
+    valorEstacionamento: 0,
+    status: "Concluido",
+    passageiros: voucher?.passageiros?.map((p: any) => ({
+      id: String(p.id),
+      statusPresenca: "Presente",
+      rateio: 0,
+      horarioEmbarqueReal: new Date().toISOString(),
+    })),
+  };
+
+  async function fechamentoVoucher() {
+    await editarVoucher({
+      assinatura: signature,
+      dataHoraConclusao: new Date().toISOString(),
+      qntTempoParado: tempoParado,
+      observacaoMotorista: obsMotorista,
+      valorViagem: voucher.valorViagem,
+      valorViagemRepasse: voucher.valorViagemRepasse,
+      valorDeslocamento: voucher.valorDeslocamento,
+      valorDeslocamentoRepasse: voucher.valorDeslocamentoRepasse,
+      valorHoraParada: tempoParado * voucher.valorHoraParada,
+      valorHoraParadaRepasse: tempoParado * voucher.valorHoraParadaRepasse,
+      valorPedagio: 0,
+      valorEstacionamento: 0,
+      status: "Concluido",
+      passageiros: voucher?.passageiros?.map((p: any) => ({
+        id: String(p.id),
+        statusPresenca: "Presente",
+        rateio: 0,
+        horarioEmbarqueReal: new Date().toISOString(),
+      })),
+    });
+  }
 
   const confirmar = async () => {
     if (!signature) {
@@ -61,19 +126,14 @@ export default function VoucherConcluir() {
 
     try {
       setIsLoading(true);
-
-      console.log("Assinatura Base64:", signature);
-      router.push("../confirmado");
+      fechamentoVoucher();
+      // console.log("Assinatura Base64:", signature);
+      // router.push("../confirmado");
     } catch (error) {
       Alert.alert("Erro", "Falha ao salvar a assinatura.");
     } finally {
       setIsLoading(false);
     }
-  };
-
-  const handleEnd = () => {
-    setIsLoading(true);
-    ref.current?.readSignature();
   };
 
   return (
@@ -124,7 +184,7 @@ export default function VoucherConcluir() {
                   {new Intl.NumberFormat("pt-BR", {
                     style: "currency",
                     currency: "BRL",
-                  }).format(Number(valoresSomados))}
+                  }).format(Number(valorViagemTotal))}
                 </Text>
               </Text>
               <View
@@ -156,6 +216,7 @@ export default function VoucherConcluir() {
                     multiline
                     style={{ flex: 1, fontSize: 14, color: Cor.texto1 }}
                     placeholder="Observação"
+                    onChangeText={(e) => setObsMotorista(e)}
                   />
                 </View>
 
