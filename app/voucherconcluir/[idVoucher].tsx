@@ -30,11 +30,13 @@ export default function VoucherConcluir() {
 
   const [tempoParado, setTempoParado] = useState<0 | 1 | 2 | 3 | 4>(0);
 
-  const { idVoucher } = route.params as {
+  const { idVoucher, passageirosAtualizados } = route.params as {
     idVoucher: any;
+    passageirosAtualizados: any;
   };
 
   const voucher = JSON.parse(idVoucher);
+  const passageirosPresenca = JSON.parse(passageirosAtualizados);
 
   const valorViagemTotal =
     voucher.valorViagem +
@@ -86,11 +88,10 @@ export default function VoucherConcluir() {
     valorPedagio: 0,
     valorEstacionamento: 0,
     status: "Concluido",
-    passageiros: voucher?.passageiros?.map((p: any) => ({
-      id: String(p.id),
-      statusPresenca: "Presente",
-      rateio: 0,
+    passageiros: passageirosPresenca.map((p: any) => ({
       horarioEmbarqueReal: new Date().toISOString(),
+      statusPresenca: p.statusPresenca,
+      rateio: Number(rateioVoucher),
     })),
   };
 
@@ -109,11 +110,11 @@ export default function VoucherConcluir() {
       valorPedagio: 0,
       valorEstacionamento: 0,
       status: "Concluido",
-      passageiros: voucher?.passageiros?.map((p: any) => ({
-        id: String(p.id),
-        statusPresenca: "Presente",
-        rateio: 0,
+      passageiros: passageirosPresenca.map((p: any) => ({
+        id: p.id,
         horarioEmbarqueReal: new Date().toISOString(),
+        statusPresenca: p.statusPresenca,
+        rateio: Number(rateioVoucher),
       })),
     });
   }
@@ -127,6 +128,7 @@ export default function VoucherConcluir() {
     try {
       setIsLoading(true);
       fechamentoVoucher();
+      // console.log(fechamento)
       // console.log("Assinatura Base64:", signature);
       // router.push("../confirmado");
     } catch (error) {
@@ -196,6 +198,13 @@ export default function VoucherConcluir() {
                 }}
               >
                 <TempoParado value={tempoParado} onChange={setTempoParado} />
+                {passageirosPresenca.map((p: any) => {
+                  return (
+                    <Text key={p.id}>
+                      {p.id}-{p.passageiroId.nome} - {p.statusPresenca}
+                    </Text>
+                  );
+                })}
                 <View
                   style={{
                     width: "100%",

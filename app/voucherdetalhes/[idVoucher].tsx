@@ -51,11 +51,6 @@ export default function VoucherDetalhes() {
           : p,
       ),
     );
-    console.log(
-      voucher?.passageiros,
-      "---------------",
-      passageirosAtualizados,
-    );
   };
 
   useEffect(() => {
@@ -457,7 +452,7 @@ export default function VoucherDetalhes() {
             pathname: "/voucherconcluir/[idVoucher]",
             params: {
               idVoucher: JSON.stringify(voucher),
-              valorViagemTotal: valorViagemTotal,
+              passageirosAtualizados: JSON.stringify(passageirosAtualizados),
             },
           })
         }
