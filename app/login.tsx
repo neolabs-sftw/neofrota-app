@@ -207,7 +207,10 @@ export default function Login() {
               </View>
 
               <Pressable
-                style={[styles.botao, { backgroundColor: loading ? "gray" : Cor.primaria }]}
+                style={[
+                  styles.botao,
+                  { backgroundColor: loading ? "gray" : Cor.primaria },
+                ]}
                 onPress={() => {
                   logar();
                   // rota.push("/home");
@@ -245,6 +248,41 @@ export default function Login() {
           justifyContent: "center",
         }}
       >
+        <Pressable
+          style={{
+            marginBottom: 40,
+            width: "50%",
+            height: 45,
+            padding: 10,
+            gap: 10,
+            borderRadius: 25,
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "center",
+            borderWidth: 1,
+            borderColor: Cor.primaria + 50,
+            backgroundColor: Cor.primaria + 30,
+          }}
+          onPress={() => rota.push("./acessos")}
+        >
+          <Text
+            allowFontScaling={false}
+            style={{ color: Cor.primaria, fontWeight: "600" }}
+          >
+            Meus acessos
+          </Text>
+          <Text
+            allowFontScaling={false}
+            style={{
+              fontFamily: "IconeFill",
+              color: Cor.primaria,
+              fontWeight: "900",
+              transform: "scale(2)",
+            }}
+          >
+            chevron_right
+          </Text>
+        </Pressable>
         <Text
           allowFontScaling={false}
           style={{ color: Cor.texto1, fontSize: 12 }}

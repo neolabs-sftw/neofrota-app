@@ -26,7 +26,9 @@ export default function BtnfuncionariosHome(funcionario: any) {
       >
         <Image
           source={{
-            uri: motoristaFunc.fotoMotorista,
+            uri: motoristaFunc.fotoMotorista
+              ? motoristaFunc.fotoMotorista
+              : "https://iyqleanlhzcnndzuugkg.supabase.co/storage/v1/object/public/neofrotabkt/img_perfis/default.png",
           }}
           style={{ height: 50, width: 50, borderRadius: 14 }}
         />

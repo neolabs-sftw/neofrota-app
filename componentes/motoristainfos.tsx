@@ -49,9 +49,8 @@ export default function MotoristaInfos(motoristaId: any) {
               <Image
                 source={{
                   uri:
-                    motorista?.fotoMotorista === null
-                      ? "https://iyqleanlhzcnndzuugkg.supabase.co/storage/v1/object/public/neofrotabkt/foto_perfil_motorista/default.png"
-                      : motorista?.fotoMotorista,
+                    motorista?.fotoMotorista ? motorista?.fotoMotorista : "https://iyqleanlhzcnndzuugkg.supabase.co/storage/v1/object/public/neofrotabkt/img_perfis/default.png"
+                      
                 }}
                 style={{
                   width: 100,

@@ -77,11 +77,17 @@ export default function Calendario() {
   LocaleConfig.defaultLocale = "pt-BR";
 
   const {
-    listaVouchersData,
+    listaVouchersData: ordemDia,
     loading: loadingVouchers,
     error: errorVMD,
     refetch: refetchVouchers,
   } = useVouchersMotoristaData(user?.motoristaId || "", diaSelecionado);
+
+   const listaVouchersData = [...ordemDia].sort(
+    (a, b) =>
+      new Date(a.dataHoraProgramado).getTime() -
+      new Date(b.dataHoraProgramado).getTime(),
+  );
 
   return (
     <View style={{ flex: 1, backgroundColor: Cor.base }}>

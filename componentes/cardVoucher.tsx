@@ -15,6 +15,9 @@ export default function CardVoucher({ voucher }: any) {
           height: 75,
           marginHorizontal: 20,
           backgroundColor: Cor.base2,
+          opacity: voucher.status === "Concluido" ? 1 : 1,
+          transform:
+            voucher.status === "Concluido" ? "scale(0.98)" : "scale(1)",
           borderRadius: 22,
           marginBottom: 10,
           flexDirection: "row",
@@ -37,11 +40,13 @@ export default function CardVoucher({ voucher }: any) {
             height: 75,
             overflow: "hidden",
             backgroundColor:
-              voucher.natureza === "Fixo"
-                ? Cor.fixo
-                : voucher.natureza === "Turno"
-                ? Cor.turno
-                : Cor.extra,
+              voucher.status === "Concluido"
+                ? Cor.texto1 + 50
+                : voucher.natureza === "Fixo"
+                  ? Cor.fixo
+                  : voucher.natureza === "Turno"
+                    ? Cor.turno
+                    : Cor.extra,
             borderTopLeftRadius: 22,
             borderBottomLeftRadius: 22,
           }}
@@ -62,11 +67,13 @@ export default function CardVoucher({ voucher }: any) {
               allowFontScaling={false}
               style={{
                 color:
-                  voucher.natureza === "Fixo"
-                    ? Cor.textoFixo
-                    : voucher.natureza === "Turno"
-                    ? Cor.textoTurno
-                    : Cor.textoExtra,
+                  voucher.status === "Concluido"
+                    ? Cor.texto1 + 90
+                    : voucher.natureza === "Fixo"
+                      ? Cor.textoFixo
+                      : voucher.natureza === "Turno"
+                        ? Cor.textoTurno
+                        : Cor.textoExtra,
                 fontWeight: "700",
               }}
             >
@@ -82,11 +89,13 @@ export default function CardVoucher({ voucher }: any) {
               allowFontScaling={false}
               style={{
                 color:
-                  voucher.natureza === "Fixo"
-                    ? Cor.textoFixo
-                    : voucher.natureza === "Turno"
-                    ? Cor.textoTurno
-                    : Cor.textoExtra,
+                  voucher.status === "Concluido"
+                    ? Cor.texto1 + 90
+                    : voucher.natureza === "Fixo"
+                      ? Cor.textoFixo
+                      : voucher.natureza === "Turno"
+                        ? Cor.textoTurno
+                        : Cor.textoExtra,
                 fontWeight: "bold",
                 fontSize: 14,
               }}
@@ -104,11 +113,13 @@ export default function CardVoucher({ voucher }: any) {
               style={{
                 fontWeight: "bold",
                 color:
-                  voucher.natureza === "Fixo"
-                    ? Cor.textoFixo
-                    : voucher.natureza === "Turno"
-                    ? Cor.textoTurno
-                    : Cor.textoExtra,
+                  voucher.status === "Concluido"
+                    ? Cor.texto1 + 90
+                    : voucher.natureza === "Fixo"
+                      ? Cor.textoFixo
+                      : voucher.natureza === "Turno"
+                        ? Cor.textoTurno
+                        : Cor.textoExtra,
               }}
             >
               {voucher.passageiros?.length}
@@ -137,11 +148,13 @@ export default function CardVoucher({ voucher }: any) {
             allowFontScaling={false}
             style={{
               color:
-                voucher.natureza === "Fixo"
-                  ? Cor.textoFixo
-                  : voucher.natureza === "Turno"
-                  ? Cor.textoTurno
-                  : Cor.textoExtra,
+                voucher.status === "Concluido"
+                  ? Cor.texto1 + 90
+                  : voucher.natureza === "Fixo"
+                    ? Cor.textoFixo
+                    : voucher.natureza === "Turno"
+                      ? Cor.textoTurno
+                      : Cor.textoExtra,
               fontSize: 14,
               fontWeight: "bold",
             }}
@@ -158,11 +171,13 @@ export default function CardVoucher({ voucher }: any) {
             width: "16%",
             aspectRatio: 1,
             backgroundColor:
-              voucher.natureza === "Fixo"
-                ? Cor.fixo + "20"
-                : voucher.natureza === "Turno"
-                ? Cor.turno + "30"
-                : Cor.extra + "20",
+              voucher.status === "Concluido"
+                ? Cor.texto1 + 20
+                : voucher.natureza === "Fixo"
+                  ? Cor.fixo + "20"
+                  : voucher.natureza === "Turno"
+                    ? Cor.turno + "30"
+                    : Cor.extra + "20",
             borderRadius: 15,
             flexDirection: "column",
             alignItems: "center",
@@ -173,11 +188,13 @@ export default function CardVoucher({ voucher }: any) {
             allowFontScaling={false}
             style={{
               color:
-                voucher.natureza === "Fixo"
-                  ? Cor.textoFixo
-                  : voucher.natureza === "Turno"
-                  ? Cor.textoTurno
-                  : Cor.textoExtra,
+                voucher.status === "Concluido"
+                  ? Cor.texto1 + 80
+                  : voucher.natureza === "Fixo"
+                    ? Cor.textoFixo
+                    : voucher.natureza === "Turno"
+                      ? Cor.textoTurno
+                      : Cor.textoExtra,
               fontFamily: "IconeFill",
               fontSize: 24,
             }}
@@ -188,11 +205,13 @@ export default function CardVoucher({ voucher }: any) {
             allowFontScaling={false}
             style={{
               color:
-                voucher.natureza === "Fixo"
-                  ? Cor.textoFixo
-                  : voucher.natureza === "Turno"
-                  ? Cor.textoTurno
-                  : Cor.textoExtra,
+                voucher.status === "Concluido"
+                  ? Cor.texto1+90
+                  : voucher.natureza === "Fixo"
+                    ? Cor.textoFixo
+                    : voucher.natureza === "Turno"
+                      ? Cor.textoTurno
+                      : Cor.textoExtra,
               fontSize: 10,
               fontWeight: "bold",
             }}

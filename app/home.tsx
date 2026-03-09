@@ -45,11 +45,22 @@ function home() {
   const hoje = formatarData(new Date());
 
   const {
-    listaVouchersData,
+    listaVouchersData: vouchersTotal,
     loading: loadingVouchers,
     error: errorVMD,
     refetch: refetchVouchers,
   } = useVouchersMotoristaData(user?.motoristaId || "", hoje);
+
+  console.log(vouchersTotal)
+
+  const ordemDia = vouchersTotal.filter((v) => v.status === "Aberto");
+
+  const listaVouchersData = [...ordemDia].sort(
+    (a, b) =>
+      new Date(a.dataHoraProgramado).getTime() -
+      new Date(b.dataHoraProgramado).getTime(),
+  );
+
 
   const [reCarregando, setReCarregando] = useState(false);
   const onRefresh = () => {

@@ -440,58 +440,60 @@ export default function VoucherDetalhes() {
                 p={p}
                 natureza={voucher?.natureza}
                 key={index}
-                onLongPress={() => marcarAusente(p.id)}
+                onLongPress={voucher?.status === "Concluido" ? ()=>{} :() => marcarAusente(p.id)}
               />
             );
           })}
         </ScrollView>
       </View>
-      <Pressable
-        onPress={() =>
-          router.push({
-            pathname: "/voucherconcluir/[idVoucher]",
-            params: {
-              idVoucher: JSON.stringify(voucher),
-              passageirosAtualizados: JSON.stringify(passageirosAtualizados),
-            },
-          })
-        }
-        style={{
-          flexDirection: "row",
-          justifyContent: "center",
-          alignSelf: "center",
-          alignItems: "center",
-          overflow: "hidden",
-          position: "absolute",
-          width: "90%",
-          bottom: 100,
-          height: 50,
-          zIndex: 1,
-          borderRadius: 22,
-          marginHorizontal: 20,
-          borderWidth: 1,
-          borderColor: Cor.primaria,
-          backgroundColor: Cor.primaria + 70,
-        }}
-      >
-        <BlurView
-          intensity={15}
-          // tint="light"
-          style={StyleSheet.absoluteFill}
-          pointerEvents="none"
-          experimentalBlurMethod="dimezisBlurView"
-        />
-        <Text
-          allowFontScaling={false}
+      {voucher.status === "Concluido" ? null : (
+        <Pressable
+          onPress={() =>
+            router.push({
+              pathname: "/voucherconcluir/[idVoucher]",
+              params: {
+                idVoucher: JSON.stringify(voucher),
+                passageirosAtualizados: JSON.stringify(passageirosAtualizados),
+              },
+            })
+          }
           style={{
-            color: Cor.texto1,
-            fontWeight: "bold",
-            fontSize: 18,
+            flexDirection: "row",
+            justifyContent: "center",
+            alignSelf: "center",
+            alignItems: "center",
+            overflow: "hidden",
+            position: "absolute",
+            width: "90%",
+            bottom: 100,
+            height: 50,
+            zIndex: 1,
+            borderRadius: 22,
+            marginHorizontal: 20,
+            borderWidth: 1,
+            borderColor: Cor.primaria,
+            backgroundColor: Cor.primaria + 70,
           }}
         >
-          Avançar
-        </Text>
-      </Pressable>
+          <BlurView
+            intensity={15}
+            // tint="light"
+            style={StyleSheet.absoluteFill}
+            pointerEvents="none"
+            experimentalBlurMethod="dimezisBlurView"
+          />
+          <Text
+            allowFontScaling={false}
+            style={{
+              color: Cor.texto1,
+              fontWeight: "bold",
+              fontSize: 18,
+            }}
+          >
+            Avançar
+          </Text>
+        </Pressable>
+      )}
 
       <Navmenu
         home={false}
