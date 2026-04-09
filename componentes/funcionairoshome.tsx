@@ -49,11 +49,7 @@ export default function FuncionariosHome() {
   const listaFuncionarios = data?.listaFuncionariosAgregadoId;
 
   if (!listaFuncionarios || listaFuncionarios.length === 0) {
-    return (
-      <View style={{ padding: 20 }}>
-        <Text style={{ color: Cor.secundaria }}>Nenhum funcionário encontrado</Text>
-      </View>
-    );
+    return null
   }
 
   return (

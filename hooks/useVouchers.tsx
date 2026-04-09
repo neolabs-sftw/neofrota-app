@@ -255,3 +255,118 @@ export function useEditarVoucher(voucherId: string) {
     error,
   };
 }
+
+
+const GET_VOUCHERS_FILTROS = gql`
+  query VouchersFiltrados($filtro: FiltroVouchersInput!) {
+  vouchersFiltrados(filtro: $filtro) {
+    id
+    origem
+    destino
+    dataHoraProgramado
+    dataHoraConclusao
+    valorViagem
+    valorViagemRepasse
+    valorDeslocamento
+    valorDeslocamentoRepasse
+    valorHoraParada
+    valorHoraParadaRepasse
+    valorPedagio
+    valorEstacionamento
+    qntTempoParado
+    natureza
+    tipoCorrida
+    status
+    observacaoMotorista
+    observacao
+    empresaCliente {
+      id
+      nome
+      fotoLogoCliente
+    }
+    unidadeCliente {
+      id
+      nome
+    }
+    motorista {
+      id
+      nome
+    }
+    adminUsuario {
+      id
+      nome
+    }
+    modeloFixo {
+      ativo
+      nomeModelo
+      configuracoes {
+       id
+      }
+    }
+    rota {
+      id
+      tributacao
+      origem
+      destino
+    }
+    observacaoMotorista
+  }
+}
+`
+
+export function useVouchersFiltrados(filtro: any) {
+  const { data, loading, error, refetch } = useQuery<{ vouchersFiltrados: any[] }>(GET_VOUCHERS_FILTROS, {
+    variables: {
+      filtro: filtro,
+    },
+    // fetchPolicy: "network-only" é bom para relatórios, para garantir dados atualizados
+    fetchPolicy: "network-only",
+    // Só roda a query se tiver o operadoraId
+    skip: !filtro?.operadoraId,
+  });
+
+  return {
+    listaFiltrados: data ? data.vouchersFiltrados : [],
+    loading,
+    error,
+    refetch,
+  };
+}
+
+
+const GET_VOUCHERS_FILTROS_VALORES = gql`
+  query VouchersFiltrados($filtro: FiltroVouchersInput!) {
+  vouchersFiltrados(filtro: $filtro) {
+    id
+    dataHoraProgramado
+    dataHoraConclusao
+    valorViagemRepasse
+    valorDeslocamentoRepasse
+    valorHoraParadaRepasse
+    valorEstacionamento
+    qntTempoParado
+    natureza
+    tipoCorrida
+    status
+  }
+}
+`
+
+export function useVouchersValores(filtro: any) {
+  const { data, loading, error, refetch } = useQuery<{ vouchersFiltrados: any[] }>(GET_VOUCHERS_FILTROS_VALORES, {
+    variables: {
+      filtro: filtro,
+    },
+    // fetchPolicy: "network-only" é bom para relatórios, para garantir dados atualizados
+    fetchPolicy: "network-only",
+    // Só roda a query se tiver o operadoraId
+    skip: !filtro?.operadoraId,
+  });
+
+  return {
+    listaFiltradosValores: data ? data.vouchersFiltrados : [],
+    loading,
+    error,
+    refetch,
+  };
+}

@@ -51,7 +51,7 @@ function home() {
     refetch: refetchVouchers,
   } = useVouchersMotoristaData(user?.motoristaId || "", hoje);
 
-  console.log(vouchersTotal)
+  // console.log(vouchersTotal)
 
   const ordemDia = vouchersTotal.filter((v) => v.status === "Aberto");
 
@@ -92,7 +92,6 @@ function home() {
             paddingBottom: 150,
           }}
         >
-          {/* <View style={{width:350, height: 150, backgroundColor:"#333", alignSelf: "center", borderRadius:22, marginBottom: 5 }}/> */}
           {motorista?.tipoMotorista === "Agregado" && <FuncionariosHome />}
           {motorista?.tipoMotorista === "Agregado" && <ModuloFinanceiro />}
           <View

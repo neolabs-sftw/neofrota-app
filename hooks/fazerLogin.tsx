@@ -42,10 +42,8 @@ async function getLoginHistory(): Promise<LoginHistoryItem[]> {
 async function addToLoginHistory(item: LoginHistoryItem) {
   const history = await getLoginHistory();
 
-  // Dedup: remove entradas iguais (por email) e coloca a mais recente no topo
   const next = [item, ...history.filter((h) => h.email !== item.email)];
 
-  // Opcional: limita tamanho (pra não crescer infinito)
   const MAX = 10;
   const limited = next.slice(0, MAX);
 
@@ -76,10 +74,8 @@ export function useFazerLogin() {
       throw err;
     }
   };
-
   return { fazerLogin, data, loading, error };
 }
-
 
 export async function removerLoginDoHistoricoPorEmail(email: string) {
   const raw = await AsyncStorage.getItem(HISTORY_KEY);

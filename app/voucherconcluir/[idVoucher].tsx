@@ -40,9 +40,9 @@ export default function VoucherConcluir() {
   const passageirosPresenca = JSON.parse(passageirosAtualizados);
 
   const valorViagemTotal =
-    voucher.valorViagem +
-    voucher.valorDeslocamento +
-    voucher.valorHoraParada * tempoParado +
+    voucher.valorViagemRepasse +
+    voucher.valorDeslocamentoRepasse +
+    voucher.valorHoraParadaRepasse * tempoParado +
     voucher.valorPedagio;
 
   const [obsMotorista, setObsMotorista] = useState<string>("");
@@ -115,8 +115,8 @@ export default function VoucherConcluir() {
         valorViagemRepasse: voucher.valorViagemRepasse,
         valorDeslocamento: voucher.valorDeslocamento,
         valorDeslocamentoRepasse: voucher.valorDeslocamentoRepasse,
-        valorHoraParada: tempoParado * voucher.valorHoraParada,
-        valorHoraParadaRepasse: tempoParado * voucher.valorHoraParadaRepasse,
+        valorHoraParada: voucher.valorHoraParada,
+        valorHoraParadaRepasse: voucher.valorHoraParadaRepasse,
         valorPedagio: 0,
         valorEstacionamento: 0,
         status: "Concluido",

@@ -31,6 +31,9 @@ export default function VoucherDetalhes() {
     voucher.valorDeslocamentoRepasse +
     voucher.valorPedagio;
 
+  const valorHoraParada =
+    voucher.valorHoraParadaRepasse * voucher.qntTempoParado;
+
   const [passageirosAtualizados, setPassageirosAtualizados] = useState<any[]>(
     [],
   );
@@ -125,6 +128,7 @@ export default function VoucherDetalhes() {
                 color: Cor.texto1,
                 fontSize: 20,
                 fontWeight: "bold",
+                textOverflow: "",
               }}
             >
               {voucher?.destino || "..."}
@@ -207,77 +211,23 @@ export default function VoucherDetalhes() {
             style={{
               width: "100%",
               flexDirection: "row",
-              gap: 10,
+              gap: 5,
               alignItems: "center",
               justifyContent: "space-between",
             }}
           >
-            <View style={{ flexDirection: "column", width: "45%" }}>
-              <Text
-                allowFontScaling={false}
-                style={{
-                  fontWeight: "500",
-                  fontSize: 11,
-                  color: "#9E9E9E",
-                }}
-              >
-                Voucher:{" "}
-                <Text
-                  allowFontScaling={false}
-                  style={{
-                    fontSize: 14,
-                    fontWeight: "bold",
-                    color:
-                      voucher?.natureza === "Fixo"
-                        ? Cor.fixo
-                        : voucher?.natureza === "Turno"
-                          ? Cor.turno
-                          : Cor.extra,
-                  }}
-                >
-                  {voucher?.id}
-                </Text>
-              </Text>
-
-              <Text
-                allowFontScaling={false}
-                style={{
-                  fontWeight: "500",
-                  fontSize: 11,
-                  color: "#9E9E9E",
-                }}
-              >
-                Passageiros:{" "}
-                <Text
-                  allowFontScaling={false}
-                  style={{
-                    fontSize: 14,
-                    fontWeight: "bold",
-                    color:
-                      voucher?.natureza === "Fixo"
-                        ? Cor.fixo
-                        : voucher?.natureza === "Turno"
-                          ? Cor.turno
-                          : Cor.extra,
-                  }}
-                >
-                  {voucher?.passageiros?.length}
-                </Text>
-              </Text>
-            </View>
-            <View style={styles.dividerH} />
             <View
               style={{
                 flexDirection: "column",
                 alignItems: "center",
-                width: "45%",
+                width: "100%",
               }}
             >
               <Text
                 allowFontScaling={false}
                 style={{
                   fontWeight: "500",
-                  fontSize: 14,
+                  fontSize: 15,
                   color: "#9E9E9E",
                 }}
               >
@@ -286,7 +236,7 @@ export default function VoucherDetalhes() {
               <Text
                 allowFontScaling={false}
                 style={{
-                  fontSize: 18,
+                  fontSize: 20,
                   fontWeight: "bold",
                   color:
                     voucher?.natureza === "Fixo"
@@ -301,6 +251,7 @@ export default function VoucherDetalhes() {
                       "pt-BR",
                       {
                         timeZone: "UTC",
+                        weekday: "long",
                         day: "2-digit",
                         month: "2-digit",
                         year: "2-digit",
@@ -310,6 +261,36 @@ export default function VoucherDetalhes() {
                     )
                   : "--/--/----"}
               </Text>
+              <Text>
+                Assinado em:{" "}
+                <Text
+                  allowFontScaling={false}
+                  style={{
+                    fontSize: 16,
+                    fontWeight: "bold",
+                    color:
+                      voucher?.natureza === "Fixo"
+                        ? Cor.fixo
+                        : voucher?.natureza === "Turno"
+                          ? Cor.turno
+                          : Cor.extra,
+                  }}
+                >
+                  {voucher?.dataHoraConclusao
+                    ? new Date(voucher.dataHoraConclusao).toLocaleTimeString(
+                        "pt-BR",
+                        {
+                          weekday: "long",
+                          day: "2-digit",
+                          month: "2-digit",
+                          year: "2-digit",
+                          hour: "2-digit",
+                          minute: "2-digit",
+                        },
+                      )
+                    : "--/--/----"}
+                </Text>
+              </Text>
             </View>
           </View>
           <View style={styles.divider} />
@@ -317,6 +298,7 @@ export default function VoucherDetalhes() {
             style={{
               flexDirection: "row",
               justifyContent: "space-between",
+              alignItems: "center",
               width: "100%",
             }}
           >
@@ -325,7 +307,10 @@ export default function VoucherDetalhes() {
                 flexDirection: "row",
                 alignItems: "center",
                 gap: 5,
-                width: "60%",
+                width: "70%",
+                height: 40,
+                borderRadius: 16,
+                paddingHorizontal: 5,
               }}
             >
               <Text
@@ -337,6 +322,16 @@ export default function VoucherDetalhes() {
                 }}
               >
                 Valor:{" "}
+                <Text
+                  allowFontScaling={false}
+                  style={{
+                    fontWeight: "700",
+                    fontSize: 14,
+                    color: "#9E9E9E",
+                  }}
+                >
+                  R$
+                </Text>
               </Text>
               <Text
                 allowFontScaling={false}
@@ -352,23 +347,53 @@ export default function VoucherDetalhes() {
                 }}
               >
                 {new Intl.NumberFormat("pt-BR", {
-                  style: "currency",
-                  currency: "BRL",
-                }).format(Number(valorViagemTotal))}
+                  style: "decimal",
+                  minimumFractionDigits: 2,
+                  maximumFractionDigits: 2,
+                }).format(Number(valorViagemTotal + valorHoraParada))}
               </Text>
+              {voucher?.qntTempoParado > 0 ? (
+                <>
+                  <Text
+                    allowFontScaling={false}
+                    style={{
+                      fontWeight: "700",
+                      fontSize: 14,
+                      color: "#9E9E9E",
+                    }}
+                  >
+                    |
+                  </Text>
+                  <Text
+                    allowFontScaling={false}
+                    style={{
+                      fontSize: 14,
+                      fontWeight: "bold",
+                      color:
+                        voucher?.natureza === "Fixo"
+                          ? Cor.fixo
+                          : voucher?.natureza === "Turno"
+                            ? Cor.turno
+                            : Cor.extra,
+                    }}
+                  >
+                    {voucher?.qntTempoParado}h Parado
+                  </Text>
+                </>
+              ) : null}
             </View>
 
-            <View style={styles.dividerH} />
+            {/* <View style={styles.dividerH} /> */}
             <View
               style={{
                 flexDirection: "row",
-                justifyContent: "space-between",
-                width: "35%",
+                justifyContent: "center",
+                width: "30%",
                 height: 40,
-                gap: 10,
+                gap: 5,
                 alignItems: "center",
                 borderRadius: 16,
-                paddingHorizontal: 10,
+                paddingHorizontal: 5,
                 backgroundColor:
                   voucher?.natureza === "Fixo"
                     ? Cor.fixo + "50"
@@ -405,11 +430,119 @@ export default function VoucherDetalhes() {
                   fontSize: 18,
                 }}
               >
-                {voucher.tipoCorrida}
+                {voucher.id}
               </Text>
             </View>
           </View>
         </View>
+        {/* bubble Operador inicio */}
+        {voucher?.status === "Cancelado" &&
+          voucher?.observacao &&
+          voucher.observacao.trim() !== "" && (
+            <View
+              style={{
+                width: "90%",
+                justifyContent: "center",
+                display: voucher?.observacao === "" ? "none" : "flex",
+              }}
+            >
+              <View style={{ alignSelf: "flex-start", flexDirection: "row" }}>
+                {/* Este View pequeno e rotacionado cria o "rabicho" da bolha */}
+                <View
+                  style={{
+                    width: 10,
+                    height: 10,
+                    backgroundColor: Cor.texto2,
+                    position: "absolute",
+                    top: 2,
+                    left: 5, // Metade para fora da bolha
+                    transform: [{ rotate: "45deg" }], // Rotacionado
+                    zIndex: 0,
+                  }}
+                />
+
+                <View
+                  style={{
+                    backgroundColor: Cor.texto2,
+                    borderRadius: 8,
+                    borderTopLeftRadius: 0,
+                    marginLeft: 10,
+                    padding: 10,
+                    maxWidth: "85%",
+                  }}
+                >
+                  {/* O layout aqui é a chave: Row, com Wrap e alinhamento na base */}
+                  <Text
+                    style={{
+                      color: Cor.base2,
+                      fontSize: 16,
+                    }}
+                  >
+                    {voucher?.observacao || ""}
+                  </Text>
+                </View>
+              </View>
+            </View>
+          )}
+        {/* bubble Operador fim */}
+        {/* bubble Motorista inicio */}
+        {voucher?.observacaoMotorista &&
+          voucher.observacaoMotorista.trim() !== "" && (
+            <View
+              style={{
+                width: "90%",
+                justifyContent: "center",
+                marginTop: 5,
+              }}
+            >
+              <View style={{ alignSelf: "flex-end", flexDirection: "row" }}>
+                {/* Este View pequeno e rotacionado cria o "rabicho" da bolha */}
+                <View
+                  style={{
+                    width: 10,
+                    height: 10,
+                    backgroundColor:
+                      voucher?.natureza === "Fixo"
+                        ? Cor.textoFixo
+                        : voucher?.natureza === "Turno"
+                          ? Cor.textoTurno
+                          : Cor.textoExtra,
+                    position: "absolute",
+                    top: 2,
+                    right: 5, // Metade para fora da bolha
+                    transform: [{ rotate: "45deg" }], // Rotacionado
+                    zIndex: 1,
+                  }}
+                />
+                <View
+                  style={{
+                    backgroundColor:
+                      voucher?.natureza === "Fixo"
+                        ? Cor.textoFixo
+                        : voucher?.natureza === "Turno"
+                          ? Cor.textoTurno
+                          : Cor.textoExtra,
+                    borderRadius: 8,
+                    borderTopRightRadius: 0,
+                    marginRight: 10,
+                    padding: 8,
+                    maxWidth: "85%",
+                  }}
+                >
+                  {/* O layout aqui é a chave: Row, com Wrap e alinhamento na base */}
+                  <Text
+                    style={{
+                      color: Cor.base2,
+                      fontSize: 16,
+                    }}
+                  >
+                    {voucher?.observacaoMotorista || ""}
+                  </Text>
+                </View>
+              </View>
+            </View>
+          )}
+        {/* bubble Motorista fim */}
         <View
           style={{
             flexDirection: "row",
@@ -426,6 +559,7 @@ export default function VoucherDetalhes() {
             ]}
           />
         </View>
+
         <ScrollView
           showsVerticalScrollIndicator={false}
           contentContainerStyle={{
@@ -440,13 +574,18 @@ export default function VoucherDetalhes() {
                 p={p}
                 natureza={voucher?.natureza}
                 key={index}
-                onLongPress={voucher?.status === "Concluido" ? ()=>{} :() => marcarAusente(p.id)}
+                onLongPress={
+                  voucher?.status === "Concluido"
+                    ? () => {}
+                    : () => marcarAusente(p.id)
+                }
               />
             );
           })}
         </ScrollView>
       </View>
-      {voucher.status === "Concluido" ? null : (
+      {voucher.status === "Concluido" ||
+      voucher.status === "Cancelado" ? null : (
         <Pressable
           onPress={() =>
             router.push({
@@ -477,7 +616,6 @@ export default function VoucherDetalhes() {
         >
           <BlurView
             intensity={15}
-            // tint="light"
             style={StyleSheet.absoluteFill}
             pointerEvents="none"
             experimentalBlurMethod="dimezisBlurView"
@@ -494,7 +632,6 @@ export default function VoucherDetalhes() {
           </Text>
         </Pressable>
       )}
-
       <Navmenu
         home={false}
         calendario={false}
@@ -506,13 +643,153 @@ export default function VoucherDetalhes() {
   );
 }
 
+// Definição das cores padrão do WhatsApp Dark Mode (já que a imagem é dark)
+const WA_COLORS = {
+  bg_dark: "#111b21",
+  bubble_green: "#005c4b",
+  text_white: "#e9edef",
+  time_gray: "#8696a0",
+  read_blue: "#53bdeb",
+};
+
+// Interface opcional para garantir a tipagem dos dados no seu app NeoFrota
+interface WhatsAppBubbleProps {
+  texto: string; // Propriedade para controlar se a mensagem foi lida
+}
+
+const WhatsAppBubble: React.FC<WhatsAppBubbleProps> = ({ texto }) => {
+  return (
+    <View
+      style={{
+        backgroundColor: WA_COLORS.bg_dark,
+        flex: 1,
+        justifyContent: "center",
+        padding: 20,
+      }}
+    >
+      <View style={{ alignSelf: "flex-end", flexDirection: "row" }}>
+        {/* Este View pequeno e rotacionado cria o "rabicho" da bolha */}
+        <View
+          style={{
+            width: 10,
+            height: 10,
+            backgroundColor: WA_COLORS.bubble_green,
+            position: "absolute",
+            top: 0,
+            right: -5, // Metade para fora da bolha
+            transform: [{ rotate: "45deg" }], // Rotacionado
+            zIndex: -1,
+          }}
+        />
+
+        <View
+          style={{
+            backgroundColor: WA_COLORS.bubble_green,
+            borderRadius: 8,
+            // Garante que o canto superior direito seja pontudo (simulando a asa)
+            borderTopRightRadius: 0,
+            paddingHorizontal: 12,
+            paddingTop: 8,
+            paddingBottom: 4, // Menos espaço embaixo para alinhar o horário
+            maxWidth: "85%",
+          }}
+        >
+          {/* O layout aqui é a chave: Row, com Wrap e alinhamento na base */}
+          <View
+            style={{
+              flexDirection: "row",
+              flexWrap: "wrap", // Faz o horário ir para baixo se o texto for longo
+              alignItems: "flex-end", // Alinha o horário à base do texto
+              justifyContent: "flex-end",
+            }}
+          >
+            <Text
+              style={{
+                color: WA_COLORS.text_white,
+                fontSize: 16,
+                marginRight: 8, // Espaço entre o texto e o horário
+                flexShrink: 1,
+              }}
+            >
+              {texto}
+            </Text>
+          </View>
+        </View>
+      </View>
+    </View>
+  );
+};
+
+const stylesBubble = StyleSheet.create({
+  container: {
+    // Fundo da tela inteira (só para demonstração)
+    backgroundColor: WA_COLORS.bg_dark,
+    flex: 1,
+    justifyContent: "center",
+    padding: 20,
+  },
+  bubbleContainer: {
+    // Alinha a bolha à direita (para mensagens enviadas)
+    alignSelf: "flex-end",
+    flexDirection: "row",
+  },
+  rightTail: {
+    // Truque para criar o "rabicho"
+    width: 10,
+    height: 10,
+    backgroundColor: WA_COLORS.bubble_green,
+    position: "absolute",
+    top: 0,
+    right: -5, // Metade para fora da bolha
+    transform: [{ rotate: "45deg" }], // Rotacionado
+    zIndex: -1, // Fica atrás do corpo principal
+  },
+  bubbleBody: {
+    backgroundColor: WA_COLORS.bubble_green,
+    borderRadius: 8,
+    // Garante que o canto superior direito seja pontudo (simulando a asa)
+    borderTopRightRadius: 0,
+    paddingHorizontal: 12,
+    paddingTop: 8,
+    paddingBottom: 4, // Menos espaço embaixo para alinhar o horário
+    maxWidth: "85%", // Impede que a bolha ocupe a tela toda
+  },
+  contentRow: {
+    flexDirection: "row",
+    flexWrap: "wrap", // Faz o horário ir para baixo se o texto for longo
+    alignItems: "flex-end", // Alinha o horário à base do texto
+    justifyContent: "flex-end", // Joga o horário para a direita
+  },
+  messageText: {
+    color: WA_COLORS.text_white,
+    fontSize: 16,
+    marginRight: 8, // Espaço entre o texto e o horário
+    flexShrink: 1, // Permite que o texto quebre linha se necessário
+  },
+  metaContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "flex-end",
+  },
+  timeText: {
+    color: WA_COLORS.time_gray,
+    fontSize: 12,
+    marginTop: 4, // Dá um leve espaço em cima do horário se ele quebrar
+  },
+  checkText: {
+    color: WA_COLORS.read_blue,
+    fontSize: 14,
+    fontWeight: "bold",
+  },
+});
+
 const styles = StyleSheet.create({
   divider: {
     height: 1,
     width: "100%",
     backgroundColor: "#9E9E9E",
-    marginHorizontal: 20,
-    marginVertical: 10,
+    marginHorizontal: 10,
+    marginVertical: 5,
   },
   dividerH: {
     height: "90%",

@@ -156,14 +156,14 @@ export default function Login() {
                   {
                     backgroundColor: Cor.base2,
                     color: Cor.texto1,
-
                     height: 55,
                   },
                 ]}
                 placeholder="Digite seu e-mail"
                 placeholderTextColor="#999999"
                 value={email}
-                onChangeText={(text) => setEmail(text.toLowerCase().trim())}
+                onChangeText={(text) => {
+                  setEmail(text.toLowerCase().trim())}}
               />
               <View
                 style={[
@@ -205,7 +205,6 @@ export default function Login() {
                   </Text>
                 </Pressable>
               </View>
-
               <Pressable
                 style={[
                   styles.botao,
@@ -213,7 +212,6 @@ export default function Login() {
                 ]}
                 onPress={() => {
                   logar();
-                  // rota.push("/home");
                 }}
                 disabled={loading}
               >

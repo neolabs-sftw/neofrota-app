@@ -11,7 +11,7 @@ export default function MotoristaInfos(motoristaId: any) {
 
   const carro = getCarro.data?.carroMotoristaId[0];
 
-  const link = `https://iyqleanlhzcnndzuugkg.supabase.co/storage/v1/object/public/neofrotabkt/carros/${carro?.marca?.toLocaleLowerCase()}/${carro?.modelo?.toLocaleLowerCase()}/${carro?.cor?.toLocaleLowerCase()}.png`;
+  const link = `https://iyqleanlhzcnndzuugkg.supabase.co/storage/v1/object/public/neofrotabkt/carros/${carro?.marca?.toLocaleLowerCase()}/${carro?.modelo?.toLowerCase().replace(/\s+/g, '_')}/${carro?.cor?.toLocaleLowerCase()}.png`;
 
   return (
     <>
@@ -62,9 +62,9 @@ export default function MotoristaInfos(motoristaId: any) {
           </View>
           <Image
             source={{
-              uri: link,
+              uri: carro ? link : "https://iyqleanlhzcnndzuugkg.supabase.co/storage/v1/object/public/neofrotabkt/carros/default.png",
             }}
-            style={{ height: 150, width: "70%", paddingHorizontal: 10 }}
+            style={{ height: 150, width: "70%", paddingHorizontal: 10, opacity: carro ? 1 : 0.2 }}
             resizeMode="contain"
           />
         </View>

@@ -8,18 +8,62 @@ export default function CardVoucher({ voucher }: any) {
   const route = useRouter();
 
   return (
-    <>
+    <View>
+      {voucher.status === "Cancelado" ? (
+        <View
+          style={{
+            position: "absolute",
+            zIndex: 1,
+            width: "85%",
+            height: 75,
+            marginHorizontal: 20,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            pointerEvents: "none",
+          }}
+        >
+          <View
+            style={{
+              display: "flex",
+              backgroundColor: Cor.base2,
+              paddingHorizontal: 30,
+              paddingVertical: 5,
+              borderRadius: 14,
+              borderWidth: 1,
+              borderColor: Cor.atencao,
+            }}
+          >
+            <Text
+              allowFontScaling={false}
+              style={{ color: Cor.atencao, fontWeight: "bold", fontSize: 16 }}
+            >
+              Cancelado
+            </Text>
+          </View>
+        </View>
+      ) : null}
       <Pressable
         style={{
           width: "auto",
           height: 75,
           marginHorizontal: 20,
-          backgroundColor: Cor.base2,
-          opacity: voucher.status === "Concluido" ? 1 : 1,
+          backgroundColor:
+            voucher.status === "Cancelado" ? Cor.atencao + 20 : Cor.base2,
+          opacity:
+            voucher.status === "Concluido"
+              ? 0.9
+              : voucher.status === "Cancelado"
+                ? 0.3
+                : 1,
           transform:
-            voucher.status === "Concluido" ? "scale(0.98)" : "scale(1)",
+            voucher.status === "Concluido" || voucher.status === "Cancelado"
+              ? "scale(0.98)"
+              : "scale(1)",
           borderRadius: 22,
           marginBottom: 10,
+          borderWidth: voucher.status === "Cancelado" ? 1 : 0,
+          borderColor: Cor.atencao + 50,
           flexDirection: "row",
           alignItems: "center",
           justifyContent: "flex-start",
@@ -40,13 +84,15 @@ export default function CardVoucher({ voucher }: any) {
             height: 75,
             overflow: "hidden",
             backgroundColor:
-              voucher.status === "Concluido"
-                ? Cor.texto1 + 50
-                : voucher.natureza === "Fixo"
-                  ? Cor.fixo
-                  : voucher.natureza === "Turno"
-                    ? Cor.turno
-                    : Cor.extra,
+              voucher.status === "Cancelado"
+                ? Cor.atencao + 99
+                : voucher.status === "Concluido"
+                  ? Cor.texto1 + 50
+                  : voucher.natureza === "Fixo"
+                    ? Cor.fixo
+                    : voucher.natureza === "Turno"
+                      ? Cor.turno
+                      : Cor.extra,
             borderTopLeftRadius: 22,
             borderBottomLeftRadius: 22,
           }}
@@ -67,7 +113,8 @@ export default function CardVoucher({ voucher }: any) {
               allowFontScaling={false}
               style={{
                 color:
-                  voucher.status === "Concluido"
+                  voucher.status === "Concluido" ||
+                  voucher.status === "Cancelado"
                     ? Cor.texto1 + 90
                     : voucher.natureza === "Fixo"
                       ? Cor.textoFixo
@@ -89,7 +136,8 @@ export default function CardVoucher({ voucher }: any) {
               allowFontScaling={false}
               style={{
                 color:
-                  voucher.status === "Concluido"
+                  voucher.status === "Concluido" ||
+                  voucher.status === "Cancelado"
                     ? Cor.texto1 + 90
                     : voucher.natureza === "Fixo"
                       ? Cor.textoFixo
@@ -113,7 +161,8 @@ export default function CardVoucher({ voucher }: any) {
               style={{
                 fontWeight: "bold",
                 color:
-                  voucher.status === "Concluido"
+                  voucher.status === "Concluido" ||
+                  voucher.status === "Cancelado"
                     ? Cor.texto1 + 90
                     : voucher.natureza === "Fixo"
                       ? Cor.textoFixo
@@ -148,7 +197,7 @@ export default function CardVoucher({ voucher }: any) {
             allowFontScaling={false}
             style={{
               color:
-                voucher.status === "Concluido"
+                voucher.status === "Concluido" || voucher.status === "Cancelado"
                   ? Cor.texto1 + 90
                   : voucher.natureza === "Fixo"
                     ? Cor.textoFixo
@@ -171,7 +220,7 @@ export default function CardVoucher({ voucher }: any) {
             width: "16%",
             aspectRatio: 1,
             backgroundColor:
-              voucher.status === "Concluido"
+              voucher.status === "Concluido" || voucher.status === "Cancelado"
                 ? Cor.texto1 + 20
                 : voucher.natureza === "Fixo"
                   ? Cor.fixo + "20"
@@ -188,7 +237,7 @@ export default function CardVoucher({ voucher }: any) {
             allowFontScaling={false}
             style={{
               color:
-                voucher.status === "Concluido"
+                voucher.status === "Concluido" || voucher.status === "Cancelado"
                   ? Cor.texto1 + 80
                   : voucher.natureza === "Fixo"
                     ? Cor.textoFixo
@@ -205,8 +254,8 @@ export default function CardVoucher({ voucher }: any) {
             allowFontScaling={false}
             style={{
               color:
-                voucher.status === "Concluido"
-                  ? Cor.texto1+90
+                voucher.status === "Concluido" || voucher.status === "Cancelado"
+                  ? Cor.texto1 + 90
                   : voucher.natureza === "Fixo"
                     ? Cor.textoFixo
                     : voucher.natureza === "Turno"
@@ -220,6 +269,6 @@ export default function CardVoucher({ voucher }: any) {
           </Text>
         </View>
       </Pressable>
-    </>
+    </View>
   );
 }

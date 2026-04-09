@@ -1,12 +1,19 @@
 import { Pressable, Text, useColorScheme, View } from "react-native";
 import { CorClara, CorEscura } from "../assets/cores";
 
-export default function ResumoMesFaturamento() {
+export default function ResumoMesFaturamento({
+  mes,
+  resumoValor,
+  press
+}: {
+  mes: any;
+  resumoValor: any;
+  press: any;
+}) {
   const Cor = useColorScheme() === "dark" ? CorEscura : CorClara;
 
   return (
-    <>
-      <Pressable>
+      <Pressable onPress={press}>
         <View
           style={{
             flexDirection: "row",
@@ -22,7 +29,7 @@ export default function ResumoMesFaturamento() {
             allowFontScaling={false}
             style={{ fontWeight: "bold", fontSize: 16, color: Cor.texto1 }}
           >
-            Dezembro
+            {mes}
           </Text>
           <View style={{ flexDirection: "row", gap: 5, alignItems: "center" }}>
             <Text
@@ -37,7 +44,7 @@ export default function ResumoMesFaturamento() {
                   color: Cor.primaria,
                 }}
               >
-                37.500,00
+                {resumoValor}
               </Text>
             </Text>
             <Text
@@ -53,6 +60,5 @@ export default function ResumoMesFaturamento() {
           </View>
         </View>
       </Pressable>
-    </>
   );
 }
