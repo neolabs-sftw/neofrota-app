@@ -4,8 +4,7 @@ import ResumoMesFaturamento from "@/componentes/resumomesfaturamento";
 import TopoInfos from "@/componentes/topoinfos";
 import { useAuth } from "@/hooks/useAuth";
 import { useFaturamentoMes } from "@/hooks/useFinanceiro";
-import { useVouchersValores } from "@/hooks/useVouchers";
-import { useMemo, useState } from "react";
+import React, { useState } from "react";
 import {
   Modal,
   ScrollView,
@@ -15,6 +14,7 @@ import {
   View,
   FlatList,
 } from "react-native";
+import { LineChart } from "react-native-gifted-charts";
 
 export default function Controle() {
   const { user } = useAuth();
@@ -47,9 +47,72 @@ export default function Controle() {
     ano: ano,
   });
 
+  const nomesDosMeses = [
+    "Jan",
+    "Fev",
+    "Mar",
+    "Abr",
+    "Mai",
+    "Jun",
+    "Jul",
+    "Ago",
+    "Set",
+    "Out",
+    "Nov",
+    "Dez",
+  ];
+
+  function formatarDadosParaGrafico(dadosDaApi: any[]) {
+    // Ordena os dados de Janeiro (1) a Dezembro (12) para o gráfico não ficar de trás pra frente
+    const dadosOrdenados = [...dadosDaApi].sort((a, b) => a.mes - b.mes);
+
+    // Array 1: Apenas os repasses de Viagem
+    const dadosViagem = dadosOrdenados.map((item) => ({
+      x: nomesDosMeses[item.mes - 1], // Converte mês 1 para "Jan"
+      y: item.valorViagemRepasse,
+    }));
+
+    // Array 2: Apenas os repasses de Hora Parada
+    const dadosHoraParada = dadosOrdenados.map((item) => ({
+      x: nomesDosMeses[item.mes - 1],
+      y: item.valorHoraParadaRepasse,
+    }));
+
+    return { dadosViagem, dadosHoraParada };
+  }
+
+  const maiorFaturamento = Math.max(
+    ...listaMeses.map((item) => item.faturamentoTotal || 0),
+  );
+
+  const valorMaximoEixoY = Math.max(
+    Math.ceil(maiorFaturamento / 1000) * 1000,
+    1000,
+  );
+
+  const numeroDeSecoes = valorMaximoEixoY / 1000;
+
+  const textosEixoY = Array.from({ length: numeroDeSecoes + 1 }, (_, index) => {
+    if (index === 0) return "0";
+    return `${index}k`;
+  });
+
   const [modalVisivel, setModalVisivel] = useState(false);
 
   const Cor = useColorScheme() === "dark" ? CorEscura : CorClara;
+
+  const { dadosViagem } = formatarDadosParaGrafico(listaMeses);
+  const { dadosHoraParada } = formatarDadosParaGrafico(listaMeses);
+
+  // Mapeia os dados para o formato esperado pelo gifted-charts
+  const listaDadosViagem = dadosViagem.map((item) => ({
+    value: item.y,
+    label: item.x,
+  }));
+  const listaDadosHoraParada = dadosHoraParada.map((item) => ({
+    value: item.y,
+    label: item.x,
+  }));
 
   return (
     <View style={{ flex: 1, backgroundColor: Cor.base }}>
@@ -122,14 +185,47 @@ export default function Controle() {
             </Text>
           </TouchableOpacity>
         </View>
-        <View style={{ width: "100%", paddingHorizontal: 20 }}>
+        <View style={{ width: "100%", paddingLeft: 20 }}>
           <View
             style={{
               width: "100%",
               height: 250,
-              backgroundColor: Cor.primaria,
+              backgroundColor: Cor.base2,
+              borderTopLeftRadius: 22,
+              borderBottomLeftRadius: 22,
+              // paddingVertical: 20,
+              justifyContent: "center",
             }}
-          ></View>
+          >
+            <LineChart
+              areaChart
+              curved
+              data={listaDadosViagem}
+              data2={listaDadosHoraParada}
+              height={200}
+              width={350}
+              spacing={50}
+              initialSpacing={0}
+              color1={Cor.primaria}
+              color2={Cor.secundaria}
+              textColor1={Cor.texto1}
+              textColor2={Cor.texto2}
+              dataPointsColor1={Cor.primaria}
+              dataPointsColor2={Cor.secundaria}
+              startFillColor1={Cor.primaria}
+              startFillColor2={Cor.secundaria}
+              endFillColor1={Cor.primaria}
+              endFillColor2={Cor.secundaria}
+              startOpacity={0.9}
+              endOpacity={0.1}
+              maxValue={valorMaximoEixoY}
+              xAxisColor={Cor.texto1 + 50}
+              yAxisColor={Cor.texto1 + 50}              
+              noOfSections={numeroDeSecoes}
+              yAxisLabelTexts={textosEixoY}
+              yAxisLabelWidth={30}
+            />
+          </View>
         </View>
         <View
           style={{
@@ -209,7 +305,7 @@ export default function Controle() {
           {listaMeses.toReversed().map((v: any) => {
             return (
               <ResumoMesFaturamento
-              key={v.mes}
+                key={v.mes}
                 mes={meses[v.mes - 1]}
                 resumoValor={Intl.NumberFormat("pt-BR", {
                   style: "decimal",
