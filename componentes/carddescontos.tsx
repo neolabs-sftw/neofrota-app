@@ -33,10 +33,8 @@ export default function CardDescontos() {
   const creditos = lancamentos
     .filter((lancamento: any) => lancamento.tipo === "Credito")
     .reduce((total: any, lancamento: any) => total + lancamento.valor, 0);
-  console.log(creditos, descontos);
 
   const saldo = creditos - descontos;
-  console.log(saldo);
 
   return (
     <>

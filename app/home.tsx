@@ -1,5 +1,4 @@
 import { CorClara, CorEscura } from "@/assets/cores";
-import { AnuncioHome } from "@/componentes/anuncioHome";
 import CardVoucher from "@/componentes/cardVoucher";
 import FuncionariosHome from "@/componentes/funcionairoshome";
 import ModuloFinanceiro from "@/componentes/modulofinanceiro";
@@ -27,7 +26,7 @@ function home() {
   const rota = useRouter();
   const Cor = useColorScheme() === "dark" ? CorEscura : CorClara;
 
-  const { user, isLoading } = useAuth();
+  const { user } = useAuth();
   const { motorista, refetch: refetchMotorista } = useMotorista(
     user?.motoristaId,
   );
@@ -47,11 +46,8 @@ function home() {
   const {
     listaVouchersData: vouchersTotal,
     loading: loadingVouchers,
-    error: errorVMD,
     refetch: refetchVouchers,
   } = useVouchersMotoristaData(user?.motoristaId || "", hoje);
-
-  // console.log(vouchersTotal)
 
   const ordemDia = vouchersTotal.filter((v) => v.status === "Aberto");
 

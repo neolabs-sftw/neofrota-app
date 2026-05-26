@@ -8,15 +8,11 @@ import React, { useRef, useState } from "react";
 import {
   ActivityIndicator,
   Alert,
-  Keyboard,
-  KeyboardAvoidingView,
-  Platform,
   Pressable,
   StyleSheet,
   Text,
   TextInput,
   TouchableOpacity,
-  TouchableWithoutFeedback,
   useColorScheme,
   View,
 } from "react-native";
@@ -39,11 +35,6 @@ export default function VoucherConcluir() {
   const voucher = JSON.parse(idVoucher);
   const passageirosPresenca = JSON.parse(passageirosAtualizados);
 
-  const valorViagemTotal =
-    voucher.valorViagemRepasse +
-    voucher.valorDeslocamentoRepasse +
-    voucher.valorHoraParadaRepasse * tempoParado +
-    voucher.valorPedagio;
 
   const [obsMotorista, setObsMotorista] = useState<string>("");
 
@@ -86,7 +77,7 @@ export default function VoucherConcluir() {
     ref.current.clearSignature();
   };
 
-  const { editarVoucher, data, loading, error } = useEditarVoucher(voucher.id);
+  const { editarVoucher } = useEditarVoucher(voucher.id);
 
   const rateioVoucher =
     (voucher.valorViagem +
@@ -96,10 +87,6 @@ export default function VoucherConcluir() {
     voucher.passageiros.length;
 
   const confirmar = async () => {
-    // if (!signature) {
-    //   Alert.alert("Atenção", "Por favor, assine antes de confirmar.");
-    //   return;
-    // }
 
     try {
       const sig = await requestSignature();
@@ -129,7 +116,6 @@ export default function VoucherConcluir() {
         })),
       });
       router.push("/home");
-      // setInterval(() => router.push("/home"), 2000);
       setIsLoading(false);
     } catch (error) {
       Alert.alert("Erro", "Falha ao salvar a assinatura.");
@@ -137,8 +123,6 @@ export default function VoucherConcluir() {
       setIsLoading(false);
     }
   };
-
-  // const loadingTemp = true;
 
   return (
     <View style={{ flex: 1, backgroundColor: Cor.base }}>
@@ -150,11 +134,6 @@ export default function VoucherConcluir() {
           backgroundColor: Cor.base,
         }}
       >
-        {/* <KeyboardAvoidingView
-          behavior={Platform.OS === "ios" ? "padding" : "height"}
-          style={{ flex: 1 }}
-        >
-          <TouchableWithoutFeedback onPress={Keyboard.dismiss}> */}
         <View
           style={{
             flex: 1,
@@ -163,40 +142,13 @@ export default function VoucherConcluir() {
             gap: 10,
           }}
         >
-          <Text
-            allowFontScaling={false}
-            style={{
-              color: Cor.texto1,
-              fontSize: 15,
-              marginTop: 10,
-            }}
-          >
-            Valor Total:{" "}
-            <Text
-              allowFontScaling={false}
-              style={{
-                color:
-                  voucher?.natureza === "Fixo"
-                    ? Cor.fixo
-                    : voucher?.natureza === "Turno"
-                      ? Cor.turno
-                      : Cor.extra,
-                fontSize: 24,
-                fontWeight: "bold",
-              }}
-            >
-              {" "}
-              {new Intl.NumberFormat("pt-BR", {
-                style: "currency",
-                currency: "BRL",
-              }).format(Number(valorViagemTotal))}
-            </Text>
-          </Text>
+         
           <View
             style={{
               width: "100%",
               flexDirection: "column",
               paddingHorizontal: 20,
+              paddingTop: 10,
               gap: 15,
             }}
           >
@@ -327,8 +279,6 @@ export default function VoucherConcluir() {
             </TouchableOpacity>
           </View>
         </View>
-        {/* </TouchableWithoutFeedback>
-        </KeyboardAvoidingView> */}
       </View>
     </View>
   );

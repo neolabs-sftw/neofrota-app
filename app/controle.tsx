@@ -4,6 +4,7 @@ import ResumoMesFaturamento from "@/componentes/resumomesfaturamento";
 import TopoInfos from "@/componentes/topoinfos";
 import { useAuth } from "@/hooks/useAuth";
 import { useFaturamentoMes } from "@/hooks/useFinanceiro";
+import { useRouter } from "expo-router";
 import React, { useState } from "react";
 import {
   Modal,
@@ -18,6 +19,8 @@ import { LineChart } from "react-native-gifted-charts";
 
 export default function Controle() {
   const { user } = useAuth();
+
+  const router = useRouter();
 
   const anoAtual = new Date().getFullYear();
 
@@ -216,11 +219,11 @@ export default function Controle() {
               startFillColor2={Cor.secundaria}
               endFillColor1={Cor.primaria}
               endFillColor2={Cor.secundaria}
-              startOpacity={0.9}
+              startOpacity={0.75}
               endOpacity={0.1}
               maxValue={valorMaximoEixoY}
               xAxisColor={Cor.texto1 + 50}
-              yAxisColor={Cor.texto1 + 50}              
+              yAxisColor={Cor.texto1 + 50}
               noOfSections={numeroDeSecoes}
               yAxisLabelTexts={textosEixoY}
               yAxisLabelWidth={30}
@@ -312,7 +315,15 @@ export default function Controle() {
                   minimumFractionDigits: 2,
                   maximumFractionDigits: 2,
                 }).format(v.faturamentoTotal)}
-                press={() => console.log("teste")}
+                press={() =>
+                  router.push({
+                    pathname: "/resumomes/[mesFaturamento]",
+                    params: {
+                      mesFaturamento: v.mes,
+                      ano: ano,
+                    },
+                  })
+                }
               />
             );
           })}
