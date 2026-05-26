@@ -4,6 +4,7 @@ import ResumoMesFaturamento from "@/componentes/resumomesfaturamento";
 import TopoInfos from "@/componentes/topoinfos";
 import { useAuth } from "@/hooks/useAuth";
 import { useFaturamentoMes } from "@/hooks/useFinanceiro";
+import { useLancamentosOperadora } from "@/hooks/useLancamentos";
 import { useRouter } from "expo-router";
 import React, { useState } from "react";
 import {
@@ -50,6 +51,8 @@ export default function Controle() {
     ano: ano,
   });
 
+  console.log(listaMeses);
+
   const nomesDosMeses = [
     "Jan",
     "Fev",
@@ -66,16 +69,13 @@ export default function Controle() {
   ];
 
   function formatarDadosParaGrafico(dadosDaApi: any[]) {
-    // Ordena os dados de Janeiro (1) a Dezembro (12) para o gráfico não ficar de trás pra frente
     const dadosOrdenados = [...dadosDaApi].sort((a, b) => a.mes - b.mes);
 
-    // Array 1: Apenas os repasses de Viagem
     const dadosViagem = dadosOrdenados.map((item) => ({
-      x: nomesDosMeses[item.mes - 1], // Converte mês 1 para "Jan"
+      x: nomesDosMeses[item.mes - 1],
       y: item.valorViagemRepasse,
     }));
 
-    // Array 2: Apenas os repasses de Hora Parada
     const dadosHoraParada = dadosOrdenados.map((item) => ({
       x: nomesDosMeses[item.mes - 1],
       y: item.valorHoraParadaRepasse,
@@ -107,7 +107,6 @@ export default function Controle() {
   const { dadosViagem } = formatarDadosParaGrafico(listaMeses);
   const { dadosHoraParada } = formatarDadosParaGrafico(listaMeses);
 
-  // Mapeia os dados para o formato esperado pelo gifted-charts
   const listaDadosViagem = dadosViagem.map((item) => ({
     value: item.y,
     label: item.x,
@@ -116,6 +115,45 @@ export default function Controle() {
     value: item.y,
     label: item.x,
   }));
+
+  const { lancamentos } = useLancamentosOperadora({
+    motoristaId: user?.motoristaId,
+    operadoraId: user?.operadoraId,
+    dataInicial: new Date(ano, 0, 1).toISOString(),
+    dataFinal: new Date(ano, 11, 31).toISOString(),
+  });
+
+  const resumoMensal = lancamentos.reduce((acc: any, lancamento: any) => {
+    const [ano, mes] = lancamento.dataHora.split("T")[0].split("-");
+    const mesAno = `${mes}`;
+
+    if (!acc[mesAno]) {
+      acc[mesAno] = { creditos: 0, descontos: 0, saldo: 0 };
+    }
+
+    if (lancamento.tipo === "Credito") {
+      acc[mesAno].creditos += lancamento.valor;
+    } else if (lancamento.tipo === "Desconto") {
+      acc[mesAno].descontos += lancamento.valor;
+    }
+
+    acc[mesAno].saldo = acc[mesAno].creditos - acc[mesAno].descontos;
+
+    return acc;
+  }, {});
+
+  const listaMesesComLançamentos = listaMeses.map((faturamento) => {
+    const mesFormatado = String(faturamento.mes).padStart(2, "0");
+
+    const saldoDoMes = resumoMensal[mesFormatado]?.saldo || 0;
+
+    const faturamentoLiquido = faturamento.faturamentoTotal + saldoDoMes;
+
+    return {
+      ...faturamento,
+      faturamentoFinal: faturamentoLiquido,
+    };
+  });
 
   return (
     <View style={{ flex: 1, backgroundColor: Cor.base }}>
@@ -305,16 +343,17 @@ export default function Controle() {
               </View>
             </TouchableOpacity>
           </Modal>
-          {listaMeses.toReversed().map((v: any) => {
+          {listaMesesComLançamentos.toReversed().map((v: any) => {
             return (
               <ResumoMesFaturamento
                 key={v.mes}
                 mes={meses[v.mes - 1]}
+                // Aqui usamos o novo valor somado (faturamentoFinal)
                 resumoValor={Intl.NumberFormat("pt-BR", {
                   style: "decimal",
                   minimumFractionDigits: 2,
                   maximumFractionDigits: 2,
-                }).format(v.faturamentoTotal)}
+                }).format(v.faturamentoFinal)}
                 press={() =>
                   router.push({
                     pathname: "/resumomes/[mesFaturamento]",

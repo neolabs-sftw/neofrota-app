@@ -216,10 +216,10 @@ export default function ResumoMes() {
     .filter((lancamento: any) => lancamento.tipo === "Credito")
     .reduce((total: any, lancamento: any) => total + lancamento.valor, 0);
 
-  const saldoLançamentos = creditos - descontos;
+  const saldoLancamentos = creditos - descontos;
 
   const saldoBruto = totalRepasse + creditos;
-  const saldo = totalRepasse + saldoLançamentos;
+  const saldo = totalRepasse + saldoLancamentos;
 
   const porcentagens = (value: any) => {
     if (saldoBruto === 0) return 0;
@@ -304,7 +304,7 @@ export default function ResumoMes() {
           alignItems: "center",
           justifyContent: "center",
           paddingBottom: -25,
-          paddingHorizontal: 20
+          paddingHorizontal: 20,
         }}
       >
         <View
@@ -498,11 +498,13 @@ export default function ResumoMes() {
             backgroundColor: Cor.base,
             width: "100%",
             marginBottom: 10,
-            height: 100,
+            height: 80,
             borderRadius: 22,
             borderWidth: 1,
             borderLeftWidth: 10,
             borderLeftColor: Cor.primaria,
+            borderRightWidth: 10,
+            borderRightColor: Cor.primaria,
             borderColor: Cor.texto2 + 50,
             justifyContent: "center",
             alignItems: "center",
