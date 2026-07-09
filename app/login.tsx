@@ -163,7 +163,8 @@ export default function Login() {
                 placeholderTextColor="#999999"
                 value={email}
                 onChangeText={(text) => {
-                  setEmail(text.toLowerCase().trim())}}
+                  setEmail(text.toLowerCase().trim());
+                }}
               />
               <View
                 style={[
@@ -268,17 +269,6 @@ export default function Login() {
             style={{ color: Cor.primaria, fontWeight: "600" }}
           >
             Meus acessos
-          </Text>
-          <Text
-            allowFontScaling={false}
-            style={{
-              fontFamily: "IconeFill",
-              color: Cor.primaria,
-              fontWeight: "900",
-              transform: "scale(2)",
-            }}
-          >
-            chevron_right
           </Text>
         </Pressable>
         <Text
