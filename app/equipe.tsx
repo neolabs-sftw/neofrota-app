@@ -16,7 +16,7 @@ import {
 export default function EquipeMotoristas() {
   const Cor = useColorScheme() === "dark" ? CorEscura : CorClara;
 
-  const { user, isLoading } = useAuth();
+  const { user } = useAuth();
   const { data: frota, refetch: refetchFrota } = useFrota(user?.motoristaId!);
 
   const listaFuncionarios = frota?.listaFuncionariosAgregadoId;
@@ -93,6 +93,4 @@ export default function EquipeMotoristas() {
     </View>
   );
 }
-function setReCarregando(arg0: boolean) {
-  throw new Error("Function not implemented.");
-}
+

@@ -160,7 +160,7 @@ export default function VoucherDetalhes() {
                 voucher?.empresaCliente?.fotoLogoCliente
                   ? { uri: voucher.empresaCliente.fotoLogoCliente }
                   : {
-                      uri: "https://iyqleanlhzcnndzuugkg.supabase.co/storage/v1/object/public/neofrotabkt/foto_logo_cliente/icon.png",
+                      uri: "https://cdn.neofrota.com/storage/v1/object/public/neofrotabkt/foto_logo_cliente/icon.png",
                     }
               }
               style={{

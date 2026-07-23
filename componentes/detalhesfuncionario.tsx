@@ -1,6 +1,7 @@
 import { CorClara, CorEscura } from "@/assets/cores";
+import { router } from "expo-router";
 // import LottieView from "lottie-react-native";
-import { Image, Text, useColorScheme, View } from "react-native";
+import { Image, Pressable, Text, useColorScheme, View } from "react-native";
 
 export default function DetalhesFuncionario({
   cpf,
@@ -109,10 +110,10 @@ export default function DetalhesFuncionario({
               fotoMotorista
                 ? { uri: fotoMotorista }
                 : {
-                  uri: "https://www.shutterstock.com/image-vector/default-avatar-profile-icon-social-600nw-1906669723.jpg",
-                }
+                    uri: "https://www.shutterstock.com/image-vector/default-avatar-profile-icon-social-600nw-1906669723.jpg",
+                  }
             }
-            style={{ height: 100, width: 80, borderRadius: 22 }}
+            style={{ height: 80, width: 80, borderRadius: 22 }}
           />
           <View
             style={{
@@ -141,25 +142,9 @@ export default function DetalhesFuncionario({
 
             <Text
               allowFontScaling={false}
-              numberOfLines={1}
               style={{ color: Cor.texto2, fontSize: 12 }}
             >
-              CNH:{" "}
-              <Text
-                style={{
-                  fontWeight: "bold",
-                  fontSize: 14,
-                  color: Cor.secundaria,
-                }}
-              >
-                {cnh}
-              </Text>
-            </Text>
-            <Text
-              allowFontScaling={false}
-              style={{ color: Cor.texto2, fontSize: 12 }}
-            >
-              Validade:{" "}
+              Validade da CNH:{" "}
               <Text
                 style={{
                   fontWeight: "bold",
@@ -168,25 +153,6 @@ export default function DetalhesFuncionario({
                 }}
               >
                 {new Date(vCnh).toLocaleDateString("pt-BR")}
-              </Text>
-            </Text>
-
-            <Text
-              allowFontScaling={false}
-              style={{ color: Cor.texto2, fontSize: 12 }}
-            >
-              CPF:{" "}
-              <Text
-                allowFontScaling={false}
-                numberOfLines={1}
-                ellipsizeMode="tail"
-                style={{
-                  fontWeight: "bold",
-                  fontSize: 14,
-                  color: Cor.secundaria,
-                }}
-              >
-                {cpf}
               </Text>
             </Text>
             <Text
@@ -225,45 +191,30 @@ export default function DetalhesFuncionario({
             justifyContent: "space-between",
           }}
         >
-          <View
+          <Pressable
             style={{
-              width: "60%",
-              height: 30,
+              paddingVertical: 10,
+              paddingHorizontal: 20,
+              borderRadius: 12,
               flexDirection: "row",
               alignItems: "center",
-              gap: 20,
+              justifyContent: "center",
+              backgroundColor: Cor.primaria + 50,
             }}
+            onPress={() => router.replace("/alterarSenha")}
           >
             <Text
               allowFontScaling={false}
-              style={{ color: Cor.texto2, fontSize: 12 }}
+              style={{ color: Cor.texto1, fontWeight: 500 }}
             >
-              Fixos / Extras
+              Alterar Senha
             </Text>
-            <Text
-              allowFontScaling={false}
-              style={{
-                fontSize: 16,
-                fontWeight: "bold",
-                color: Cor.texto2,
-              }}
-            >
-              <Text style={{ color: Cor.fixo }}>150</Text> /{" "}
-              <Text style={{ color: Cor.extra }}>210</Text>
-            </Text>
-          </View>
+          </Pressable>
           <View
             style={{
-              width: 1,
-              height: 30,
-              backgroundColor: Cor.texto2 + 50,
-            }}
-          />
-          <View
-            style={{
-              width: "35%",
-              height: 30,
               borderRadius: 12,
+              paddingVertical: 10,
+              paddingHorizontal: 20,
               gap: 10,
               flexDirection: "row",
               alignItems: "center",
@@ -272,16 +223,11 @@ export default function DetalhesFuncionario({
                 status === true ? Cor.ativo + 50 : Cor.inativo + 50,
             }}
           >
-            {/* <LottieView
-              source={status === true ? icativo : icinativo}
-              autoPlay
-              speed={1}
-              loop={true}
-              style={{ width: 20, height: 20 }}
-            /> */}
-
-            <Text allowFontScaling={false}>
-              {status === true ? "Ativo" : "Inativo"}
+            <Text
+              allowFontScaling={false}
+              style={{ color: Cor.texto1, fontWeight: 500 }}
+            >
+              Status: {status === true ? "Ativo" : "Inativo"}
             </Text>
           </View>
         </View>

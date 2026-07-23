@@ -12,18 +12,16 @@ export default function CardFuncionario({
   const Cor = useColorScheme() === "dark" ? CorEscura : CorClara;
   const router = useRouter();
 
-  const { data, loading, refetch } = useMotorista(idmotorista);
+  const { motorista, loading, refetch } = useMotorista(idmotorista);
 
-  const {data: carroID } = useCarroID(idmotorista);
+  const { data: carroID } = useCarroID(idmotorista);
 
-  const carro = carroID?.carroMotoristaId[0]
+  const carro = carroID?.carroMotoristaId[0];
 
-  const motorista = data?.motorista;
-  
   const icativo = require("../assets/animation/icativo.json");
   const icinativo = require("../assets/animation/icinativo.json");
 
-  const link = `https://iyqleanlhzcnndzuugkg.supabase.co/storage/v1/object/public/neofrotabkt/carros/${carro?.marca?.toLocaleLowerCase()}/${carro?.modelo?.toLocaleLowerCase()}/${carro?.cor?.toLocaleLowerCase()}.png`;
+  const link = `https://cdn.neofrota.com/storage/v1/object/public/neofrotabkt/carros/${carro?.marca?.toLocaleLowerCase()}/${carro?.modelo?.toLocaleLowerCase()}/${carro?.cor?.toLocaleLowerCase()}.png`;
 
   return (
     <Pressable
@@ -53,11 +51,11 @@ export default function CardFuncionario({
       >
         <Image
           source={{
-                  uri:
-                    motorista?.fotoMotorista === null
-                      ? "https://iyqleanlhzcnndzuugkg.supabase.co/storage/v1/object/public/neofrotabkt/foto_perfil_motorista/default.png"
-                      : motorista?.fotoMotorista,
-                }}
+            uri:
+              motorista?.fotoMotorista === null
+                ? "https://cdn.neofrota.com/storage/v1/object/public/neofrotabkt/foto_perfil_motorista/default.png"
+                : motorista?.fotoMotorista,
+          }}
           style={{ height: 120, width: 120, borderRadius: 14 }}
         />
         <View
@@ -175,7 +173,7 @@ export default function CardFuncionario({
               fontWeight: "bold",
             }}
           >
-            { motorista?.statusCnh ? "Válida" : "Vencida"}
+            {motorista?.statusCnh ? "Válida" : "Vencida"}
           </Text>
         </View>
       </View>

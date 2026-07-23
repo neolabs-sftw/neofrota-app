@@ -48,7 +48,7 @@ export default function TopoInfos({ segredo, fotoPerfil }: any) {
               source={{
                 uri:
                   motorista?.operadoraId?.logoOperadora ??
-                  "https://iyqleanlhzcnndzuugkg.supabase.co/storage/v1/object/public/neofrotabkt/foto_logo_cliente/icon.png",
+                  "https://cdn.neofrota.com/storage/v1/object/public/neofrotabkt/foto_logo_cliente/icon.png",
               }}
               style={{
                 width: "100%",
@@ -102,7 +102,7 @@ export default function TopoInfos({ segredo, fotoPerfil }: any) {
               source={{
                 uri:
                   motorista?.fotoMotorista ??
-                  "https://iyqleanlhzcnndzuugkg.supabase.co/storage/v1/object/public/neofrotabkt/foto_perfil_motorista/default.png",
+                  "https://cdn.neofrota.com/storage/v1/object/public/neofrotabkt/foto_perfil_motorista/default.png",
               }}
               style={{
                 width: 50,

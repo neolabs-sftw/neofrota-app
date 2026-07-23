@@ -7,6 +7,7 @@ import { useVouchersMotoristaData } from "@/hooks/useVouchers";
 import { useState } from "react";
 import {
   ActivityIndicator,
+  RefreshControl,
   ScrollView,
   Text,
   useColorScheme,
@@ -83,11 +84,20 @@ export default function Calendario() {
     refetch: refetchVouchers,
   } = useVouchersMotoristaData(user?.motoristaId || "", diaSelecionado);
 
-   const listaVouchersData = [...ordemDia].sort(
+  const listaVouchersData = [...ordemDia].sort(
     (a, b) =>
       new Date(a.dataHoraProgramado).getTime() -
       new Date(b.dataHoraProgramado).getTime(),
   );
+
+  const [reCarregando, setReCarregando] = useState(false);
+  const onRefresh = () => {
+    setReCarregando(true);
+    refetchVouchers();
+    setTimeout(() => {
+      setReCarregando(false);
+    }, 1000);
+  };
 
   return (
     <View style={{ flex: 1, backgroundColor: Cor.base }}>
@@ -176,7 +186,12 @@ export default function Calendario() {
             style={{ width: "100%", height: 1, backgroundColor: Cor.primaria }}
           />
         </View>
-        <ScrollView contentContainerStyle={{ paddingBottom: 100 }}>
+        <ScrollView
+          contentContainerStyle={{ paddingBottom: 100 }}
+          refreshControl={
+            <RefreshControl refreshing={reCarregando} onRefresh={onRefresh} />
+          }
+        >
           {loadingVouchers ? (
             <ActivityIndicator color={Cor.primaria} />
           ) : (

@@ -18,8 +18,8 @@ export default function FuncionarioMotorista() {
   } = route.params as {
     idmotorista: number;
   };
-  const { data: motoristaId } = useMotorista(idmotorista);
-  const motorista = motoristaId?.motorista;
+  const { motorista } = useMotorista(idmotorista);
+
 
   const avisoCNH = (
     <View

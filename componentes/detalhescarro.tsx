@@ -10,7 +10,7 @@ export default function DetalhesCarro({ idMotorista }: { idMotorista: any }) {
 
   const carro = carroID?.carroMotoristaId[0]
 
-  const linkFotoCarro = `https://iyqleanlhzcnndzuugkg.supabase.co/storage/v1/object/public/neofrotabkt/carros/${carro?.marca?.toLocaleLowerCase()}/${carro?.modelo?.toLocaleLowerCase()}/${carro?.cor?.toLocaleLowerCase()}.png`;
+  const linkFotoCarro = `https://cdn.neofrota.com/storage/v1/object/public/neofrotabkt/carros/${carro?.marca?.toLocaleLowerCase()}/${carro?.modelo?.toLocaleLowerCase()}/${carro?.cor?.toLocaleLowerCase()}.png`;
 
   const avisoLicenciamento = (
     <View

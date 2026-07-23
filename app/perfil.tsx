@@ -13,16 +13,19 @@ export default function Perfil() {
   const rota = useRouter();
   const Cor = useColorScheme() === "dark" ? CorEscura : CorClara;
 
-  const {user, isLoading, logout} = useAuth();
-  const motorista = useMotorista(user?.motoristaId);
+  const { user, isLoading, logout } = useAuth();
 
-  const perfil = motorista.data?.motorista;
+  const { motorista, refetch: refetchMotorista } = useMotorista(
+    user?.motoristaId,
+  );
+
+  const perfil = motorista;
 
   const [motoristaID, setMotoristaID] = useState(user?.motoristaId);
+
   return (
     <View style={{ flex: 1, backgroundColor: Cor.base }}>
       <TopoInfos segredo={false} fotoPerfil={false} motoristaID={motoristaID} />
-      
       <View
         style={{
           flex: 1,
@@ -30,7 +33,7 @@ export default function Perfil() {
           gap: 10,
           flexDirection: "column",
           justifyContent: "flex-start",
-          alignItems: "center"
+          alignItems: "center",
         }}
       >
         <Text
@@ -51,9 +54,7 @@ export default function Perfil() {
             cnh={perfil?.cnh}
             vCnh={perfil?.vCnh}
           />
-          <DetalhesCarro
-            idMotorista={user?.motoristaId}
-          />
+          <DetalhesCarro idMotorista={user?.motoristaId} />
         </View>
         <Pressable
           style={{
@@ -68,14 +69,26 @@ export default function Perfil() {
             backgroundColor: Cor.inativo + 90,
           }}
           onPress={() => {
-            // AsyncStorage.removeItem("userToken");
             logout();
-            // window.location.reload();
             rota.replace("/login");
           }}
         >
           <Text style={{ color: Cor.texto1, fontWeight: "bold", fontSize: 16 }}>
             Sair
+          </Text>
+        </Pressable>
+        <Pressable onPress={() => rota.replace("/solicitarExclusao")}>
+          <Text
+            allowFontScaling={false}
+            style={{
+              textDecorationLine: "underline",
+              textDecorationStyle: "solid",
+              textDecorationColor: Cor.atencao,
+              color: Cor.atencao,
+              fontWeight: 500,
+            }}
+          >
+            Soliciar exclusão dessa conta.
           </Text>
         </Pressable>
       </View>

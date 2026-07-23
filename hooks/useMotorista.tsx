@@ -1,5 +1,5 @@
 import { gql } from "@apollo/client";
-import { useQuery } from "@apollo/client/react";
+import { useMutation, useQuery } from "@apollo/client/react";
 
 const GET_MOTORISTA = gql`
   query Motorista($motoristaId: ID!) {
@@ -59,5 +59,33 @@ export function useMotorista(motoristaId: any) {
     loading,
     error,
     refetch: refetch || (() => Promise.resolve()),
+  };
+}
+
+const UPDATE_MOTORISTA = gql`
+  mutation Mutation($updateMotoristaId: ID!, $input: MotoristaInput!) {
+    updateMotorista(id: $updateMotoristaId, input: $input) {
+      id
+    }
+  }
+`;
+
+export function useEditarMotorisa() {
+  const [editar, { data, loading, error }] = useMutation(UPDATE_MOTORISTA);
+
+  const editarMotorista = (updateMotoristaId: any, input: any) => {
+    return editar({
+      variables: {
+        updateMotoristaId,
+        input,
+      },
+    });
+  };
+
+  return {
+    editarMotorista,
+    data,
+    loading,
+    error,
   };
 }

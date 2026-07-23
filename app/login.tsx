@@ -26,6 +26,7 @@ export default function Login() {
   const { fazerLogin, loading, error } = useFazerLogin();
 
   const [erroDados, setErroDados] = useState(false);
+  const [mensagemErro, setMensagemErro] = useState("");
 
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
@@ -38,33 +39,35 @@ export default function Login() {
   }, [erroDados]);
 
   const logar = async () => {
+    setErroDados(false);
+    setMensagemErro("");
+
     if (email === "" || senha === "") {
       setErroDados(true);
-      console.log("erro");
+      setMensagemErro("Preencha todos os campos.");
+      return;
     }
+
     try {
       await fazerLogin(email, senha);
       rota.push("/home");
-    } catch (err) {
-      console.log(error);
-      return (
-        <View
-          style={{
-            padding: 20,
-            flex: 1,
-            justifyContent: "center",
-            alignItems: "center",
-            backgroundColor: "#F4F4F450",
-          }}
-        >
-          Preencha dos campos
-        </View>
-      );
+    } catch (err: any) {
+      // Converte o erro para texto para garantir que conseguimos ler a mensagem
+      const textoErro = err.message || String(err);
+
+      // Verifica se o erro contém a mensagem exata retornada pelo seu backend
+      if (textoErro.includes("Email ou senha inválidos")) {
+        setMensagemErro("E-mail ou senha inválidos.");
+      } else {
+        // Caso seja um erro de falta de internet ou o servidor fora do ar
+        setMensagemErro("Erro ao conectar. Tente novamente.");
+      }
     }
   };
+
   return (
     <>
-      {erroDados && (
+      {(erroDados || mensagemErro !== "") && (
         <BlurView
           intensity={10}
           style={{
@@ -104,11 +107,22 @@ export default function Login() {
               emergency_home
             </Text>
             <Text
-              style={{ color: Cor.texto1, fontSize: 16, fontWeight: "bold" }}
+              style={{
+                color: Cor.texto1,
+                fontSize: 16,
+                fontWeight: "bold",
+                textAlign: "center",
+                paddingHorizontal: 15,
+              }}
             >
-              Preencha Todos os campos
+              {mensagemErro || "Preencha Todos os campos"}
             </Text>
-            <Pressable onPress={() => setErroDados(false)}>
+            <Pressable
+              onPress={() => {
+                setErroDados(false);
+                setMensagemErro("");
+              }}
+            >
               <Text
                 style={{
                   color: Cor.primaria,

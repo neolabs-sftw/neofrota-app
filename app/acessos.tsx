@@ -55,7 +55,7 @@ function acessos() {
               data={l.loggedAt}
               token={l.token}
               imagem={
-                "https://iyqleanlhzcnndzuugkg.supabase.co/storage/v1/object/public/neofrotabkt/img_perfis/logoservir.jpeg "
+                "https://cdn.neofrota.com/storage/v1/object/public/neofrotabkt/img_perfis/logoservir.jpeg "
               }
             />
           );
