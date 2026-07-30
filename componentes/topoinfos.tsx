@@ -6,7 +6,7 @@ import { useState } from "react";
 import { Image, Pressable, Text, useColorScheme, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-export default function TopoInfos({ segredo, fotoPerfil }: any) {
+export default function TopoInfos({ segredo, fotoPerfil, setSegredo }: any) {
   const Cor = useColorScheme() === "dark" ? CorEscura : CorClara;
 
   const { user, isLoading } = useAuth();
@@ -82,7 +82,8 @@ export default function TopoInfos({ segredo, fotoPerfil }: any) {
             <Pressable
               onPress={() => {
                 setSegredoValores(!segredoValores);
-                router.push("/TesteSkia");
+                setSegredo(!segredo);
+                // router.push("/TesteSkia");
               }}
             >
               <Text

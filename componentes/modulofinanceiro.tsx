@@ -5,7 +5,7 @@ import CardResumoValores from "./cardresumovalores";
 import { useAuth } from "@/hooks/useAuth";
 import { useVouchersFiltrados } from "@/hooks/useVouchers";
 
-export default function ModuloFinanceiro() {
+export default function ModuloFinanceiro({ segredo }: { segredo: any }) {
   const formatarParaYMD = (data: Date) => {
     const ano = data.getFullYear();
     const mes = String(data.getMonth() + 1).padStart(2, "0");

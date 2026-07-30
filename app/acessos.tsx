@@ -12,23 +12,52 @@ import {
   Image,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { jwtDecode } from "jwt-decode";
+import { useOperadoras } from "@/hooks/useOperadoras";
 
 function acessos() {
   const Cor = useColorScheme() === "dark" ? CorEscura : CorClara;
-
   const [listaLogins, setListaLogins] = useState<any[]>([]);
+  const rota = useRouter();
 
-  async function name() {
-    const raw = await AsyncStorage.getItem("HistoricoLogins");
-    setListaLogins(raw ? JSON.parse(raw) : []);
-    return raw ? JSON.parse(raw) : [];
+  async function carregarHistorico() {
+    try {
+      const raw = await AsyncStorage.getItem("HistoricoLogins");
+      if (raw) {
+        const dados = JSON.parse(raw);
+
+        const dadosComTokenDecodificado = dados.map((item: any) => {
+          try {
+            const payloadJwt = jwtDecode(item.token);
+            return {
+              ...item,
+              infoJwt: payloadJwt,
+            };
+          } catch (e) {
+            return { ...item, infoJwt: null };
+          }
+        });
+
+        setListaLogins(dadosComTokenDecodificado);
+      } else {
+        setListaLogins([]);
+      }
+    } catch (error) {
+      console.error("Erro ao carregar histórico:", error);
+    }
   }
 
   useEffect(() => {
-    name();
+    carregarHistorico();
   }, []);
 
-  const rota = useRouter();
+  // Função para deletar o login e atualizar o estado imediatamente na tela
+  const handleDeleteLogin = async (emailParaRemover: string) => {
+    await removerLoginDoHistoricoPorEmail(emailParaRemover);
+    // Atualiza o estado filtrando o item removido para atualizar a UI na hora
+    setListaLogins((prev) => prev.filter((item) => item.email !== emailParaRemover));
+  };
+
   return (
     <SafeAreaView
       style={{
@@ -54,9 +83,8 @@ function acessos() {
               email={l.email}
               data={l.loggedAt}
               token={l.token}
-              imagem={
-                "https://cdn.neofrota.com/storage/v1/object/public/neofrotabkt/img_perfis/logoservir.jpeg "
-              }
+              infos={l.infoJwt}
+              onDelete={handleDeleteLogin}
             />
           );
         })}
@@ -82,8 +110,7 @@ function acessos() {
           style={{
             fontFamily: "IconeFill",
             color: Cor.primaria,
-            fontWeight: "900",
-            transform: "scale(2)"
+            transform: "scale(2)",
           }}
         >
           chevron_left
@@ -105,18 +132,24 @@ function BtnAcesso({
   email,
   data,
   token,
-  imagem,
+  infos,
+  onDelete,
 }: {
   email: string;
   data: string;
   token: any;
-  imagem: string;
+  infos: any;
+  onDelete: (email: string) => void;
 }) {
   const Cor = useColorScheme() === "dark" ? CorEscura : CorClara;
-
   const rota = useRouter();
-
   const TOKEN_KEY = process.env.EXPO_PUBLIC_TOKEN_KEY!;
+
+  const { data: listaOperadoras } = useOperadoras();
+
+  const operadora = listaOperadoras.find(
+    (o: any) => o.id === infos?.operadoraId,
+  );
 
   return (
     <Pressable
@@ -132,8 +165,8 @@ function BtnAcesso({
         borderWidth: 1,
         borderColor: Cor.primaria + 30,
       }}
-      onPress={() => {
-        AsyncStorage.setItem(TOKEN_KEY, token);
+      onPress={async () => {
+        await AsyncStorage.setItem(TOKEN_KEY, token);
         rota.push("./home");
       }}
     >
@@ -146,7 +179,9 @@ function BtnAcesso({
       >
         <Image
           source={{
-            uri: imagem,
+            uri:
+              operadora?.logoOperadora ||
+              "https://cdn.neofrota.com/storage/v1/object/public/neofrotabkt/foto_logo_cliente/01457895000145-1756600886295.png",
           }}
           style={{
             width: 55,
@@ -159,7 +194,7 @@ function BtnAcesso({
             allowFontScaling={false}
             style={{ color: Cor.primariaTxt, fontWeight: "500", fontSize: 18 }}
           >
-            Servir Transportes
+            {operadora?.nome || "Carregando"}
           </Text>
           <Text
             allowFontScaling={false}
@@ -167,10 +202,12 @@ function BtnAcesso({
           >
             {email}
           </Text>
-          <Text>
+          <Text
+            allowFontScaling={false}
+            style={{ color: Cor.texto1, fontWeight: "200", fontSize: 11 }}
+          >
             Registrado em:{" "}
-            {new Date(data).toLocaleTimeString("pt-BR", {
-              timeZone: "UTC-3",
+            {new Date(data).toLocaleString("pt-BR", {
               day: "2-digit",
               month: "2-digit",
               year: "2-digit",
@@ -191,17 +228,13 @@ function BtnAcesso({
           justifyContent: "center",
           alignItems: "center",
         }}
-        onPress={() => {
-          removerLoginDoHistoricoPorEmail(email);
-          rota.push("./login");
-        }}
+        onPress={() => onDelete(email)}
       >
         <Text
           allowFontScaling={false}
           style={{
             fontFamily: "IconeFill",
             color: Cor.atencao + 95,
-            fontWeight: "900",
             transform: "scale(1.5)",
           }}
         >

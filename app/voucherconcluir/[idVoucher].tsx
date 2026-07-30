@@ -271,7 +271,7 @@ export default function VoucherConcluir() {
                   fontWeight: "bold",
                 }}
                 onPress={() => {
-                  router.push("/_sitemap");
+                  router.back();
                 }}
               >
                 Cancelar

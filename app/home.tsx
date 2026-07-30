@@ -11,7 +11,7 @@ import { useFrota } from "@/hooks/useFrota";
 import { useMotorista } from "@/hooks/useMotorista";
 import { useVouchersMotoristaData } from "@/hooks/useVouchers";
 import { useRouter } from "expo-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   ActivityIndicator,
   RefreshControl,
@@ -32,6 +32,7 @@ function home() {
   );
   const { refetch: refetchFrota } = useFrota(user?.motoristaId!);
   const { refetch: refetchCarro } = useCarroID(user?.motoristaId);
+  const [segredo, setSegredo] = useState(false);
 
   const formatarData = (isoOrDate: string | Date) => {
     const d = new Date(isoOrDate);
@@ -57,7 +58,6 @@ function home() {
       new Date(b.dataHoraProgramado).getTime(),
   );
 
-
   const [reCarregando, setReCarregando] = useState(false);
   const onRefresh = () => {
     setReCarregando(true);
@@ -71,11 +71,19 @@ function home() {
     }, 1000);
   };
 
+  useEffect(() => {
+    console.log(segredo)
+  }, [segredo]);
+
   return (
     <>
       <View style={{ flex: 1, backgroundColor: Cor.base }}>
         {/* <AnuncioHome/> */}
-        <TopoInfos segredo={true} fotoPerfil={false} />
+        <TopoInfos
+          segredo={true}
+          setSegredo={setSegredo}
+          fotoPerfil={false}
+        />
         <MotoristaInfos motoristaId={motorista} />
         <ScrollView
           refreshControl={
@@ -89,7 +97,9 @@ function home() {
           }}
         >
           {motorista?.tipoMotorista === "Agregado" && <FuncionariosHome />}
-          {motorista?.tipoMotorista === "Agregado" && <ModuloFinanceiro />}
+          {motorista?.tipoMotorista === "Agregado" && (
+            <ModuloFinanceiro segredo={segredo} />
+          )}
           <View
             style={{
               flexDirection: "row",

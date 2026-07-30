@@ -570,10 +570,10 @@ export default function ResumoMes() {
           >
             <Text
               style={{
-                fontWeight: "bold",
                 color: Cor.extra,
                 fontSize: 25,
                 fontFamily: "IconeFill",
+                alignSelf: "center",
               }}
               allowFontScaling={false}
             >
@@ -632,7 +632,6 @@ export default function ResumoMes() {
           >
             <Text
               style={{
-                fontWeight: "bold",
                 color: Cor.fixo,
                 fontSize: 38,
                 fontFamily: "IconeFill",
@@ -694,7 +693,6 @@ export default function ResumoMes() {
           >
             <Text
               style={{
-                fontWeight: "bold",
                 color: Cor.turno,
                 fontSize: 38,
                 fontFamily: "IconeFill",
@@ -756,7 +754,6 @@ export default function ResumoMes() {
           >
             <Text
               style={{
-                fontWeight: "bold",
                 color: Cor.ativo,
                 fontSize: 38,
                 fontFamily: "IconeFill",
@@ -818,9 +815,8 @@ export default function ResumoMes() {
           >
             <Text
               style={{
-                fontWeight: "bold",
                 color: Cor.atencao,
-                fontSize: 38,
+                fontSize: 30,
                 fontFamily: "IconeFill",
               }}
               allowFontScaling={false}

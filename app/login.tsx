@@ -284,6 +284,16 @@ export default function Login() {
           >
             Meus acessos
           </Text>
+          <Text
+            allowFontScaling={false}
+            style={{
+              fontFamily: "IconeFill",
+              color: Cor.primaria,
+              transform: "scale(2)",
+            }}
+          >
+            chevron_right
+          </Text>
         </Pressable>
         <Text
           allowFontScaling={false}

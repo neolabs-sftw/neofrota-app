@@ -218,7 +218,6 @@ export default function Controle() {
               style={{
                 fontFamily: "IconeFill",
                 color: Cor.primaria,
-                fontWeight: "900",
                 transform: "scale(2)",
               }}
             >

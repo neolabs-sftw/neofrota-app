@@ -108,7 +108,6 @@ export default function VoucherDetalhes() {
                 color: Cor.texto1,
                 fontSize: 38,
                 fontFamily: "IconeFill",
-                fontWeight: "bold",
               }}
             >
               arrow_right
@@ -412,7 +411,6 @@ export default function VoucherDetalhes() {
                         ? Cor.turno
                         : Cor.extra,
                   fontFamily: "IconeFill",
-                  fontWeight: "bold",
                   fontSize: 20,
                 }}
               >
