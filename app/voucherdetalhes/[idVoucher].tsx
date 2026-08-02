@@ -2,6 +2,7 @@ import { CorClara, CorEscura } from "@/assets/cores";
 import CardPassageiro from "@/componentes/cardpassageiro";
 import Navmenu from "@/componentes/navmenu";
 import TopoInfos from "@/componentes/topoinfos";
+import { usePrivacidade } from "@/hooks/usePrivacidade";
 import { useRoute } from "@react-navigation/native";
 import { BlurView } from "expo-blur";
 import { useRouter } from "expo-router";
@@ -23,6 +24,8 @@ export default function VoucherDetalhes() {
   const { idVoucher } = route.params as {
     idVoucher: any;
   };
+
+  const { segredo: segredoValores, alterarSegredo } = usePrivacidade();
 
   const voucher = JSON.parse(decodeURIComponent(idVoucher));
 
@@ -345,12 +348,35 @@ export default function VoucherDetalhes() {
                         : Cor.extra,
                 }}
               >
-                {new Intl.NumberFormat("pt-BR", {
-                  style: "decimal",
-                  minimumFractionDigits: 2,
-                  maximumFractionDigits: 2,
-                }).format(Number(valorViagemTotal + valorHoraParada))}
+                {segredoValores
+                  ? new Intl.NumberFormat("pt-BR", {
+                      style: "decimal",
+                      minimumFractionDigits: 2,
+                      maximumFractionDigits: 2,
+                    }).format(Number(valorViagemTotal + valorHoraParada))
+                  : "°°°°"}
               </Text>
+              <Pressable
+                onPress={() => {
+                  alterarSegredo();
+                }}
+              >
+                <Text
+                  allowFontScaling={false}
+                  style={{
+                    color:
+                      voucher?.natureza === "Fixo"
+                        ? Cor.fixo + 90
+                        : voucher?.natureza === "Turno"
+                          ? Cor.turno + 90
+                          : Cor.extra + 90,
+                    fontFamily: "IconeFill",
+                    fontSize: 25,
+                  }}
+                >
+                  {segredoValores ? "visibility" : "visibility_off"}
+                </Text>
+              </Pressable>
               {voucher?.qntTempoParado > 0 ? (
                 <>
                   <Text

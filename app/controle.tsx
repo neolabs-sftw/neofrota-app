@@ -5,6 +5,7 @@ import TopoInfos from "@/componentes/topoinfos";
 import { useAuth } from "@/hooks/useAuth";
 import { useFaturamentoMes } from "@/hooks/useFinanceiro";
 import { useLancamentosOperadora } from "@/hooks/useLancamentos";
+import { usePrivacidade } from "@/hooks/usePrivacidade";
 import { useRouter } from "expo-router";
 import React, { useState } from "react";
 import {
@@ -26,6 +27,8 @@ export default function Controle() {
   const anoAtual = new Date().getFullYear();
 
   const [ano, setAno] = useState(new Date().getFullYear());
+  
+    const { segredo: segredoValores, alterarSegredo } = usePrivacidade();
 
   const anosDisponiveis = Array.from({ length: 6 }, (_, i) =>
     String(anoAtual - i),
@@ -50,8 +53,6 @@ export default function Controle() {
     motoristaId: user?.motoristaId || "",
     ano: ano,
   });
-
-  console.log(listaMeses);
 
   const nomesDosMeses = [
     "Jan",
@@ -157,7 +158,7 @@ export default function Controle() {
 
   return (
     <View style={{ flex: 1, backgroundColor: Cor.base }}>
-      <TopoInfos segredo={false} fotoPerfil={true} />
+      <TopoInfos segredo={true} fotoPerfil={true} />
       <View
         style={{
           flex: 1,
@@ -263,7 +264,7 @@ export default function Controle() {
               yAxisColor={Cor.texto1 + 50}
               noOfSections={numeroDeSecoes}
               yAxisLabelTexts={textosEixoY}
-              yAxisLabelWidth={30}
+              yAxisLabelWidth={segredoValores ? 30 : 0}
             />
           </View>
         </View>
@@ -348,11 +349,11 @@ export default function Controle() {
                 key={v.mes}
                 mes={meses[v.mes - 1]}
                 // Aqui usamos o novo valor somado (faturamentoFinal)
-                resumoValor={Intl.NumberFormat("pt-BR", {
+                resumoValor={segredoValores ? Intl.NumberFormat("pt-BR", {
                   style: "decimal",
                   minimumFractionDigits: 2,
                   maximumFractionDigits: 2,
-                }).format(v.faturamentoFinal)}
+                }).format(v.faturamentoFinal) : "°°°°"}
                 press={() =>
                   router.push({
                     pathname: "/resumomes/[mesFaturamento]",

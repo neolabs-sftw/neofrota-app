@@ -3,7 +3,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { useLancamentosOperadora } from "@/hooks/useLancamentos";
 import { Text, useColorScheme, View } from "react-native";
 
-export default function CardDescontos() {
+export default function CardDescontos({ segredo }: { segredo: any }) {
   const Cor = useColorScheme() === "dark" ? CorEscura : CorClara;
 
   const { user } = useAuth();
@@ -55,7 +55,12 @@ export default function CardDescontos() {
           style={{
             width: 50,
             height: 50,
-            backgroundColor:saldo === 0 ? Cor.texto2 + 60 : saldo < 0 ? Cor.atencao + 20 : Cor.ativo + 20,
+            backgroundColor:
+              saldo === 0
+                ? Cor.texto2 + 60
+                : saldo < 0
+                  ? Cor.atencao + 20
+                  : Cor.ativo + 20,
             borderTopStartRadius: 22,
             borderBottomStartRadius: 22,
             alignItems: "flex-start",
@@ -68,7 +73,8 @@ export default function CardDescontos() {
             style={{
               width: 30,
               height: 30,
-              backgroundColor: saldo === 0 ? Cor.texto2 : saldo < 0 ? Cor.atencao : Cor.ativo,
+              backgroundColor:
+                saldo === 0 ? Cor.texto2 : saldo < 0 ? Cor.atencao : Cor.ativo,
               borderRadius: 12,
               alignItems: "center",
               justifyContent: "center",
@@ -83,7 +89,11 @@ export default function CardDescontos() {
                 textAlign: "center",
               }}
             >
-             {saldo === 0 ? "counter_0" : saldo < 0 ? "money_off" : "attach_money"}
+              {saldo === 0
+                ? "counter_0"
+                : saldo < 0
+                  ? "money_off"
+                  : "attach_money"}
             </Text>
           </View>
         </View>
@@ -96,14 +106,15 @@ export default function CardDescontos() {
             style={{
               fontWeight: "bold",
               fontSize: 16,
-              color:saldo === 0 ? Cor.texto2 : saldo < 0 ? Cor.atencao : Cor.ativo,
+              color:
+                saldo === 0 ? Cor.texto2 : saldo < 0 ? Cor.atencao : Cor.ativo,
             }}
           >
-            {Intl.NumberFormat("pt-BR", {
+            {segredo ? Intl.NumberFormat("pt-BR", {
               style: "decimal",
               minimumFractionDigits: 2,
               maximumFractionDigits: 2,
-            }).format(saldo)}
+            }).format(saldo) : "°°°°"}
           </Text>
         </Text>
       </View>

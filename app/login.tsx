@@ -99,7 +99,6 @@ export default function Login() {
             <Text
               style={{
                 fontSize: 100,
-                fontWeight: "bold",
                 fontFamily: "Icone",
                 color: Cor.atencao,
               }}

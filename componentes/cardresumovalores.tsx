@@ -5,8 +5,14 @@ type Props = {
   tipo: string;
   valor: number;
   totalV: number;
+  segredo: boolean;
 };
-export default function CardResumoValores({ tipo, valor, totalV }: Props) {
+export default function CardResumoValores({
+  tipo,
+  valor,
+  totalV,
+  segredo,
+}: Props) {
   const Cor = useColorScheme() === "dark" ? CorEscura : CorClara;
 
   const titulo = tipo === "fixo" ? "Fixos e Turnos" : "Extras";
@@ -119,11 +125,11 @@ export default function CardResumoValores({ tipo, valor, totalV }: Props) {
               fontWeight: "700",
             }}
           >
-            {Intl.NumberFormat("pt-BR", {
+            { segredo ? Intl.NumberFormat("pt-BR", {
               style: "decimal",
               minimumFractionDigits: 2,
               maximumFractionDigits: 2,
-            }).format(valor)}
+            }).format(valor) : "°°°°"}
           </Text>
         </View>
       </View>
@@ -158,7 +164,7 @@ export default function CardResumoValores({ tipo, valor, totalV }: Props) {
             fontWeight: "700",
           }}
         >
-          {totalV}
+          {segredo ? totalV : "°°"}
         </Text>
       </View>
     </View>

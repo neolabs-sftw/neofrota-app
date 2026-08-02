@@ -1,18 +1,17 @@
 import { CorClara, CorEscura } from "@/assets/cores";
 import { useAuth } from "@/hooks/useAuth";
 import { useMotorista } from "@/hooks/useMotorista";
-import { router } from "expo-router";
-import { useState } from "react";
 import { Image, Pressable, Text, useColorScheme, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { usePrivacidade } from "@/hooks/usePrivacidade";
 
-export default function TopoInfos({ segredo, fotoPerfil, setSegredo }: any) {
+export default function TopoInfos({ segredo, fotoPerfil }: any) {
   const Cor = useColorScheme() === "dark" ? CorEscura : CorClara;
 
-  const { user, isLoading } = useAuth();
+  const { user } = useAuth();
   const { motorista } = useMotorista(user?.motoristaId);
 
-  const [segredoValores, setSegredoValores] = useState(true);
+  const { segredo: segredoValores, alterarSegredo } = usePrivacidade();
 
   const inset = useSafeAreaInsets();
 
@@ -77,13 +76,11 @@ export default function TopoInfos({ segredo, fotoPerfil, setSegredo }: any) {
             </Text>
           </View>
         </View>
-        <View style={{ flexDirection: "row", alignItems: "center" }}>
+        <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
           {segredo ? (
             <Pressable
               onPress={() => {
-                setSegredoValores(!segredoValores);
-                setSegredo(!segredo);
-                // router.push("/TesteSkia");
+                alterarSegredo();
               }}
             >
               <Text

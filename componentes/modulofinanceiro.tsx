@@ -4,8 +4,9 @@ import CardDescontos from "./carddescontos";
 import CardResumoValores from "./cardresumovalores";
 import { useAuth } from "@/hooks/useAuth";
 import { useVouchersFiltrados } from "@/hooks/useVouchers";
+import { usePrivacidade } from "@/hooks/usePrivacidade";
 
-export default function ModuloFinanceiro({ segredo }: { segredo: any }) {
+export default function ModuloFinanceiro() {
   const formatarParaYMD = (data: Date) => {
     const ano = data.getFullYear();
     const mes = String(data.getMonth() + 1).padStart(2, "0");
@@ -13,6 +14,8 @@ export default function ModuloFinanceiro({ segredo }: { segredo: any }) {
 
     return `${ano}-${mes}-${dia}`;
   };
+
+  const { segredo: segredoValores, alterarSegredo } = usePrivacidade();
 
   const hoje = new Date();
   const primeiroDia = new Date(hoje.getFullYear(), hoje.getMonth(), 1);
@@ -127,6 +130,8 @@ export default function ModuloFinanceiro({ segredo }: { segredo: any }) {
   );
 
   const Cor = useColorScheme() === "dark" ? CorEscura : CorClara;
+
+
   return (
     <>
       <View style={{ flexDirection: "column", gap: 5 }}>
@@ -152,6 +157,7 @@ export default function ModuloFinanceiro({ segredo }: { segredo: any }) {
             <CardResumoValores
               tipo="fixo"
               totalV={listaFixos.length + listaTurnos.length}
+              segredo={segredoValores}
               valor={
                 totaisFixos.viagemRepasse +
                 totaisFixos.deslocamentoRepasse +
@@ -165,6 +171,7 @@ export default function ModuloFinanceiro({ segredo }: { segredo: any }) {
             />
             <CardResumoValores
               tipo="extra"
+              segredo={segredoValores}
               totalV={listaExtras.length}
               valor={
                 totaisExtras.viagemRepasse +
@@ -175,7 +182,7 @@ export default function ModuloFinanceiro({ segredo }: { segredo: any }) {
             />
           </View>
         </View>
-        <CardDescontos />
+        <CardDescontos segredo={segredoValores} />
       </View>
     </>
   );
