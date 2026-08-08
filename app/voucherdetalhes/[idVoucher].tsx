@@ -29,6 +29,8 @@ export default function VoucherDetalhes() {
 
   const voucher = JSON.parse(decodeURIComponent(idVoucher));
 
+  console.log(voucher);
+
   const valorViagemTotal =
     voucher.valorViagemRepasse +
     voucher.valorDeslocamentoRepasse +
@@ -296,6 +298,36 @@ export default function VoucherDetalhes() {
             </View>
           </View>
           <View style={styles.divider} />
+          {voucher?.valorPedagio > 0 ? (
+            <View
+              style={{
+                flexDirection: "row",
+                justifyContent: "center",
+                gap: 5,
+                alignItems: "center",
+                width: "100%",
+              }}
+            >
+              <Text
+                allowFontScaling={false}
+                style={{
+                  fontSize: 18,
+                  fontFamily: "IconeFill",
+                  color:
+                    voucher?.natureza === "Fixo"
+                      ? Cor.fixo
+                      : voucher?.natureza === "Turno"
+                        ? Cor.turno
+                        : Cor.extra,
+                }}
+              >
+                price_check
+              </Text>
+              <Text allowFontScaling={false} style={{ fontSize: 12 }}>
+                Pedágio adicionado
+              </Text>
+            </View>
+          ) : null}
           <View
             style={{
               flexDirection: "row",
@@ -407,13 +439,12 @@ export default function VoucherDetalhes() {
                 </>
               ) : null}
             </View>
-
             {/* <View style={styles.dividerH} /> */}
             <View
               style={{
                 flexDirection: "row",
                 justifyContent: "center",
-                width: "30%",
+                width: "20%",
                 height: 40,
                 gap: 5,
                 alignItems: "center",
@@ -436,22 +467,8 @@ export default function VoucherDetalhes() {
                       : voucher?.natureza === "Turno"
                         ? Cor.turno
                         : Cor.extra,
-                  fontFamily: "IconeFill",
-                  fontSize: 20,
-                }}
-              >
-                {voucher.tipoCorrida === "Entrada" ? "login" : "logout"}
-              </Text>
-              <Text
-                allowFontScaling={false}
-                style={{
-                  color:
-                    voucher?.natureza === "Fixo"
-                      ? Cor.fixo
-                      : voucher?.natureza === "Turno"
-                        ? Cor.turno
-                        : Cor.extra,
-                  fontSize: 18,
+                  fontSize: 14,
+                  fontWeight: "bold",
                 }}
               >
                 {voucher.id}

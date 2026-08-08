@@ -35,6 +35,7 @@ export default function VoucherConcluir() {
   const voucher = JSON.parse(idVoucher);
   const passageirosPresenca = JSON.parse(passageirosAtualizados);
 
+  console.log(voucher);
 
   const [obsMotorista, setObsMotorista] = useState<string>("");
 
@@ -79,22 +80,27 @@ export default function VoucherConcluir() {
 
   const { editarVoucher } = useEditarVoucher(voucher.id);
 
+  const presentes = passageirosPresenca.filter(
+    (p: any) => p.statusPresenca !== "Ausente",
+  );
+  const quantidadePresentes = presentes.length;
+
+  const valorTotalVoucher =
+    voucher.valorViagem +
+    voucher.valorDeslocamento +
+    voucher.valorHoraParada +
+    voucher.valorPedagio;
+
   const rateioVoucher =
-    (voucher.valorViagem +
-      voucher.valorDeslocamento +
-      voucher.valorHoraParada +
-      voucher.valorPedagio) /
-    voucher.passageiros.length;
+    quantidadePresentes > 0 ? valorTotalVoucher / quantidadePresentes : 0;
 
   const confirmar = async () => {
-
     try {
       const sig = await requestSignature();
 
       setIsLoading(true);
       await editarVoucher({
         assinatura: sig,
-        // assinatura: signature,
         dataHoraConclusao: new Date().toISOString(),
         qntTempoParado: tempoParado,
         observacaoMotorista: obsMotorista,
@@ -104,7 +110,7 @@ export default function VoucherConcluir() {
         valorDeslocamentoRepasse: voucher.valorDeslocamentoRepasse,
         valorHoraParada: voucher.valorHoraParada,
         valorHoraParadaRepasse: voucher.valorHoraParadaRepasse,
-        valorPedagio: 0,
+        valorPedagio: voucher.valorPedagio,
         valorEstacionamento: 0,
         status: "Concluido",
         passageiros: passageirosPresenca.map((p: any) => ({
@@ -112,7 +118,7 @@ export default function VoucherConcluir() {
           horarioEmbarqueReal: new Date().toISOString(),
           statusPresenca:
             p.statusPresenca === "Ausente" ? "Ausente" : "Presente",
-          rateio: Number(rateioVoucher),
+         rateio: p.statusPresenca === "Ausente" ? 0 : Number(rateioVoucher),
         })),
       });
       router.push("/home");
@@ -142,7 +148,6 @@ export default function VoucherConcluir() {
             gap: 10,
           }}
         >
-         
           <View
             style={{
               width: "100%",
