@@ -34,9 +34,6 @@ export default function VoucherConcluir() {
 
   const voucher = JSON.parse(idVoucher);
   const passageirosPresenca = JSON.parse(passageirosAtualizados);
-
-  console.log(voucher);
-
   const [obsMotorista, setObsMotorista] = useState<string>("");
 
   const [isLoading, setIsLoading] = useState(false);
@@ -97,6 +94,14 @@ export default function VoucherConcluir() {
   const confirmar = async () => {
     try {
       const sig = await requestSignature();
+
+      if (!sig || sig === "data:," || !sig.startsWith("data:image/")) {
+        Alert.alert(
+          "Assinatura Inválida", 
+          "Não foi possível capturar a assinatura corretamente. Por favor, assine novamente."
+        );
+        return; // O 'return' encerra a função aqui e impede a mutation de rodar!
+      }
 
       setIsLoading(true);
       await editarVoucher({

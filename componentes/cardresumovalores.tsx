@@ -17,6 +17,8 @@ export default function CardResumoValores({
 
   const titulo = tipo === "fixo" ? "Fixos e Turnos" : "Extras";
 
+  const mesAtual = new Date().toLocaleString('pt-BR', { month: 'long' });
+
   return (
     <View
       style={{
@@ -94,7 +96,7 @@ export default function CardResumoValores({
                 fontWeight: "700",
               }}
             >
-              Julho
+              {mesAtual}
             </Text>
             <Text
               allowFontScaling={false}
