@@ -29,8 +29,6 @@ export default function VoucherDetalhes() {
 
   const voucher = JSON.parse(decodeURIComponent(idVoucher));
 
-  console.log(voucher);
-
   const valorViagemTotal =
     voucher.valorViagemRepasse +
     voucher.valorDeslocamentoRepasse +
